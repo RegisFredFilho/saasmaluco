@@ -39,8 +39,20 @@ services:
     networks:
       - saas
 
+  node:
+    image: node:22-alpine
+    working_dir: /var/www/html
+    volumes:
+      - ./app:/var/www/html
+      - node_modules:/var/www/html/node_modules
+    networks:
+      - saas
+    profiles:
+      - frontend
+
 networks:
   saas:
 
 volumes:
   mysql_data:
+  node_modules:
