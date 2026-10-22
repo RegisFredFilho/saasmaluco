@@ -119,5 +119,3 @@ jobs:
             deploy@100.104.243.44 \
             "deploy ${{ github.sha }}"
 
-      - name: Build frontend
-        run: npm run build
