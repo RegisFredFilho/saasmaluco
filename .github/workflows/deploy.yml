@@ -1,0 +1,55 @@
+name: Homologacao - Teste de Conexao
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: homolog-deploy
+  cancel-in-progress: false
+
+jobs:
+  connection-test:
+    name: Testar Tailscale e SSH
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Conectar ao Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:github-actions-hmlgigsaa
+          ping: 100.104.243.44
+
+      - name: Configurar chave SSH
+        env:
+          HOMOLOG_SSH_KEY: ${{ secrets.HOMOLOG_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$HOMOLOG_SSH_KEY" > ~/.ssh/homolog_deploy
+          chmod 600 ~/.ssh/homolog_deploy
+
+      - name: Testar comando SSH bloqueado
+        run: |
+          set +e
+          OUTPUT=$(ssh \
+            -i ~/.ssh/homolog_deploy \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=accept-new \
+            -o ConnectTimeout=15 \
+            -T deploy@100.104.243.44 whoami 2>&1)
+          STATUS=$?
+          set -e
+
+          if [[ "$STATUS" -ne 0 ]] &&
+             [[ "$OUTPUT" == *"ERRO: comando SSH não autorizado."* ]]; then
+            echo "Conexao SSH autenticada e comando bloqueado corretamente."
+          else
+            echo "Falha no teste de restricao SSH."
+            echo "Codigo de saida: $STATUS"
+            exit 1
+          fi
