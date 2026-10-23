@@ -2,9 +2,9 @@
 services:
   app:
     build:
-    restart: unless-stopped
       context: .
       dockerfile: Dockerfile
+    restart: unless-stopped  
     working_dir: /var/www/html
     volumes:
       - ./app:/var/www/html
