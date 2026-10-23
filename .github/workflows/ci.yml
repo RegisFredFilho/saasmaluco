@@ -72,11 +72,30 @@ jobs:
 
       - name: Install frontend dependencies
         run: npm ci
-  
+ 
+  docker-compose:
+    name: Docker Compose Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose
+        env:
+          APP_PORT: "8080"
+          DB_DATABASE: "saas_test"
+          DB_USERNAME: "saas_test"
+          DB_PASSWORD: "ci_dummy_password"
+          MYSQL_ROOT_PASSWORD: "ci_dummy_root_password"
+        run: |
+          docker compose -f compose.yaml config --quiet
+          echo "Docker Compose validado com sucesso!"
+ 
   deploy:
     name: Deploy Homologacao
     runs-on: ubuntu-latest
-    needs: [laravel, frontend]
+    needs: [laravel, frontend, docker-compose]
 
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
 
