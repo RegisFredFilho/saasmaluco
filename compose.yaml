@@ -6,8 +6,12 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     working_dir: /var/www/html
+    environment:
+      # Evita "touch(): Utime failed" no Windows (bind mount não permite utime).
+      VIEW_COMPILED_PATH: /tmp/laravel-views
     volumes:
       - ./app:/var/www/html
+      - laravel_views:/tmp/laravel-views
     depends_on:
       mysql:
         condition: service_healthy
@@ -89,3 +93,4 @@ networks:
 volumes:
   mysql_data:
   node_modules:
+  laravel_views:

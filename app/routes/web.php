@@ -20,6 +20,7 @@ use App\Http\Controllers\OpportunityController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\Social\PostController;
 use App\Http\Controllers\VenueProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -44,13 +45,59 @@ Route::get('/oportunidades/{opportunity}', [OpportunityController::class, 'show'
 
 Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/dashboard', function () {
+        $user = auth()->user();
+
+        $venueIds = \App\Models\VenueProfile::query()
+            ->where(function ($query) use ($user) {
+                $query->where('owner_user_id', $user->id)
+                    ->orWhereHas('managers', fn ($q) => $q->where('user_id', $user->id));
+            })
+            ->pluck('id');
+
+        $artistIds = \App\Models\ArtistProfile::query()
+            ->where(function ($query) use ($user) {
+                $query->where('owner_user_id', $user->id)
+                    ->orWhereHas('members', fn ($q) => $q->where('user_id', $user->id));
+            })
+            ->pluck('id');
+
         return view('dashboard', [
-            'artistProfiles' => auth()->user()->ownedArtistProfiles()->latest()->take(5)->get(),
-            'venueProfiles' => auth()->user()->ownedVenueProfiles()->latest()->take(5)->get(),
+            'artistProfiles' => $user->ownedArtistProfiles()->latest()->take(5)->get(),
+            'venueProfiles' => $user->ownedVenueProfiles()->latest()->take(5)->get(),
+            'featuredOpportunities' => \App\Models\Opportunity::query()
+                ->discoverable()
+                ->with(['venueProfile', 'genres'])
+                ->latest()
+                ->take(4)
+                ->get(),
+            'spotlightArtists' => \App\Models\ArtistProfile::query()
+                ->discoverable()
+                ->with('genres')
+                ->latest()
+                ->take(6)
+                ->get(),
+            'upcomingBookings' => \App\Models\Booking::query()
+                ->where(function ($query) use ($venueIds, $artistIds) {
+                    $query->whereIn('venue_profile_id', $venueIds)
+                        ->orWhereIn('artist_profile_id', $artistIds);
+                })
+                ->where('status', \App\Enums\BookingStatus::Confirmed)
+                ->where('starts_at', '>=', now())
+                ->with(['opportunity', 'artistProfile', 'venueProfile'])
+                ->orderBy('starts_at')
+                ->take(3)
+                ->get(),
+            'unreadNotifications' => \App\Models\AppNotification::query()
+                ->where('user_id', $user->id)
+                ->unread()
+                ->count(),
         ]);
     })->name('dashboard');
 
     Route::get('/rede', [NetworkController::class, 'index'])->name('network.index');
+    Route::get('/publicacoes/nova', [PostController::class, 'create'])->name('posts.create');
+    Route::post('/publicacoes', [PostController::class, 'store'])->name('posts.store');
+    Route::delete('/publicacoes/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
     Route::get('/candidaturas', [ApplicationController::class, 'index'])->name('applications.index');
     Route::get('/notificacoes', [AppNotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notificacoes/lidas', [AppNotificationController::class, 'markAllRead'])->name('notifications.read-all');

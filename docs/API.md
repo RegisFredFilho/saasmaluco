@@ -119,6 +119,10 @@ Mesmas regras e auditoria do painel web `/admin`.
 
 Uploads (`avatar`, `photo`, `cover`) via `multipart/form-data`.
 
+## Rede / posts (Etapa 21–22)
+
+Posts e feed “Seguindo” estão na **web** (`/publicacoes`, `/rede`). Superfície API correspondente fica para etapa futura autorizada.
+
 ## Fora do escopo atual
 
-Convites de banda via API, push, mídia/experiências via API. Sem app Flutter no MVP.
+Convites de banda via API, posts/feed via API, push, mídia/experiências via API. Sem app Flutter no MVP.

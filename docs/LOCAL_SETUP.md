@@ -123,6 +123,7 @@ Não aponte o DocumentRoot do Apache para este projeto enquanto o fluxo Docker e
 3. **Porta 8080 em uso** — altere `APP_PORT` no `.env` da raiz.
 4. **500 após subir** — rode `key:generate` e `migrate`; confira `app/.env` (`DB_HOST=mysql`).
 5. **Assets sem estilo** — execute `npm run build` (host ou profile `frontend`).
+6. **`touch(): Utime failed` em views Blade** — no Windows o bind mount impede `utime` em `storage/framework/views`. O Compose usa `VIEW_COMPILED_PATH=/tmp/laravel-views` (volume `laravel_views`). Recrie o app: `docker compose up -d --force-recreate app`.
 
 ## CI
 

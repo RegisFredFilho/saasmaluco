@@ -1,32 +1,28 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between gap-3">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Notificações</h2>
-            <form method="post" action="{{ route('notifications.read-all') }}">
-                @csrf
-                <button class="text-sm text-indigo-600 hover:underline">Marcar todas como lidas</button>
-            </form>
-        </div>
+        <x-page-header title="Notificações" lead="Alertas internos do SindiGig.">
+            <x-slot name="actions">
+                <form method="post" action="{{ route('notifications.read-all') }}">
+                    @csrf
+                    <button class="sg-btn-secondary">Marcar todas como lidas</button>
+                </form>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8 space-y-3">
-            <p class="text-sm text-gray-600">Alertas internos do SindiGig. E-mail/push ficam para evolução futura.</p>
-
-            @forelse ($notifications as $notification)
-                <a href="{{ route('notifications.read', $notification) }}"
-                   class="block bg-white shadow sm:rounded-lg p-4 {{ $notification->read_at ? 'opacity-70' : 'border-l-4 border-indigo-500' }}">
-                    <div class="flex justify-between gap-3">
-                        <p class="font-medium text-gray-900">{{ $notification->title }}</p>
-                        <p class="text-xs text-gray-500 whitespace-nowrap">{{ $notification->created_at->format('d/m/Y H:i') }}</p>
-                    </div>
-                    <p class="text-sm text-gray-600 mt-1">{{ $notification->body }}</p>
-                </a>
-            @empty
-                <div class="bg-white shadow sm:rounded-lg p-6 text-sm text-gray-600">Nenhuma notificação ainda.</div>
-            @endforelse
-
-            <div>{{ $notifications->links() }}</div>
-        </div>
+    <div class="mx-auto max-w-3xl space-y-3">
+        @forelse ($notifications as $notification)
+            <a href="{{ route('notifications.read', $notification) }}"
+               class="sg-list-row {{ $notification->read_at ? 'opacity-70' : 'border-l-4 border-l-accent' }}">
+                <div class="flex justify-between gap-3">
+                    <p class="font-semibold text-ink">{{ $notification->title }}</p>
+                    <p class="whitespace-nowrap text-xs text-ink-muted">{{ $notification->created_at->format('d/m/Y H:i') }}</p>
+                </div>
+                <p class="mt-1 text-sm text-ink-muted">{{ $notification->body }}</p>
+            </a>
+        @empty
+            <x-empty-state title="Nenhuma notificação">Quando houver atividade relevante, ela aparece aqui.</x-empty-state>
+        @endforelse
+        <div>{{ $notifications->links() }}</div>
     </div>
 </x-app-layout>

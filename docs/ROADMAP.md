@@ -230,6 +230,47 @@ Dependências fortes: 0→1→2; 3 e 4 após 2; 5 após 3–4; 7 após 5 (e idea
 | Critério | Mesmos Form Requests/Policies da web; estranho recebe 403 |
 | Status | **Concluída** — conta + artista + venue |
 
+### Etapa 20 — Decisões e docs da rede profissional (A2)
+
+| Campo | Conteúdo |
+|-------|----------|
+| Objetivo | Formalizar AuthorActor, Follow≠Connection≠Favorite, feed misto, inbox dual |
+| Escopo | `BUSINESS_RULES` D29–D34, ARCHITECTURE módulo Social, este ROADMAP |
+| Depende de | Etapas 0–19 |
+| Critério | Docs alinhados; marketplace intocado |
+| Status | **Concluída** |
+
+### Etapa 21 — Publicações (posts) B1
+
+| Campo | Conteúdo |
+|-------|----------|
+| Objetivo | Posts texto com publisher User/artista/venue |
+| Escopo | Migration `posts`, Policy, CRUD web, listagem no perfil, testes |
+| Depende de | Etapa 20 |
+| Critério | Só quem manage o publisher publica; 403 para estranho |
+| Status | **Concluída** — CRUD web + listagem no perfil |
+
+### Etapa 22 — Feed “Seguindo” misto C1
+
+| Campo | Conteúdo |
+|-------|----------|
+| Objetivo | `/rede` com posts + oportunidades dos seguidos |
+| Escopo | Expandir `NetworkController`; UI com cards distintos |
+| Depende de | Etapa 21 |
+| Critério | Paginação/limite; não misturar com conversas comerciais |
+| Status | **Concluída** — `BuildFollowingFeed` + cards distintos |
+
+### Etapas futuras (rede) — não iniciar sem autorização
+
+| Etapa | Nome | Nota |
+|------:|------|------|
+| 23 | Mídia de posts (B2) | Upload / soft-delete |
+| 24 | Reações e comentários (D1) | Só em posts |
+| 25 | Connections bilaterais (D2) | User↔User |
+| 26 | Comunidades (E1) | Grupos |
+| 27 | Mensagens sociais (F1) | Tabelas próprias |
+| 28 | Pontes post→marketplace (G1) | CTAs + origem |
+
 ---
 
 ## Funcionalidades previstas (checklist consolidado)
@@ -253,6 +294,9 @@ Dependências fortes: 0→1→2; 3 e 4 após 2; 5 após 3–4; 7 após 5 (e idea
 - [x] E-mail opcional de notificações (Etapa 17)
 - [x] Admin API (Etapa 18)
 - [x] Mutações de perfil via API (Etapa 19)
+- [x] Decisões rede profissional D29–D34 (Etapa 20)
+- [x] Publicações / posts (Etapa 21)
+- [x] Feed Seguindo misto (Etapa 22)
 
 ---
 
@@ -274,11 +318,12 @@ Uma etapa só fecha quando:
 
 ## Próximo passo imediato
 
-**MVP web + API completa (marketplace, admin, perfis) + convites + e-mail opcional.** Push ou convites via API exigem nova autorização.
+**Marketplace MVP (0–19) + rede A2/B1/C1 (20–22) concluídos** (posts + feed Seguindo). Próximas etapas de rede (23+: mídia, reações, connections, comunidades, DM social) exigem nova autorização.
 
-Comandos úteis: `docs/LOCAL_SETUP.md`. Backup: `docs/BACKUP.md`. API: `docs/API.md`.
+Comandos úteis: `docs/LOCAL_SETUP.md`. Backup: `docs/BACKUP.md`. API: `docs/API.md`. Fluxo Git: `docs/GIT_WORKFLOW.md` (PRs → `develop`).
 
 - Auth web: http://localhost:8080/register · `/login`
+- Rede: http://localhost:8080/rede
 - Admin web / API: `/admin` · `/api/v1/admin`
 - Meus perfis API: `/api/v1/me/artists` · `/api/v1/me/venues`
 - E-mail local: `MAIL_MAILER=log` → `storage/logs`

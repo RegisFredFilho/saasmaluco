@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\OpportunityStatus;
 use App\Models\ArtistProfile;
 use App\Models\Favorite;
 use App\Models\Follow;
-use App\Models\Opportunity;
 use App\Models\VenueProfile;
+use App\Services\Social\BuildFollowingFeed;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class NetworkController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request, BuildFollowingFeed $feedBuilder): View
     {
         $user = $request->user();
 
@@ -29,19 +28,6 @@ class NetworkController extends Controller
             ->latest()
             ->get();
 
-        $followedVenueIds = $follows
-            ->filter(fn (Follow $f) => $f->followable instanceof VenueProfile)
-            ->pluck('followable_id')
-            ->all();
-
-        $feed = Opportunity::query()
-            ->where('status', OpportunityStatus::Open)
-            ->whereIn('venue_profile_id', $followedVenueIds ?: [0])
-            ->with('venueProfile')
-            ->orderBy('event_date')
-            ->limit(15)
-            ->get();
-
         return view('network.index', [
             'followedArtists' => $follows
                 ->filter(fn (Follow $f) => $f->followable instanceof ArtistProfile)
@@ -55,7 +41,7 @@ class NetworkController extends Controller
             'favoriteVenues' => $favorites
                 ->filter(fn (Favorite $f) => $f->favoritable instanceof VenueProfile)
                 ->values(),
-            'feed' => $feed,
+            'feedItems' => $feedBuilder->handle($user),
         ]);
     }
 }

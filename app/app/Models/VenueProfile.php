@@ -100,6 +100,11 @@ class VenueProfile extends Model
         return $this->morphMany(Follow::class, 'followable');
     }
 
+    public function posts(): MorphMany
+    {
+        return $this->morphMany(Post::class, 'publisher');
+    }
+
     public function favorites(): MorphMany
     {
         return $this->morphMany(Favorite::class, 'favoritable');

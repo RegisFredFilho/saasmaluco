@@ -80,6 +80,7 @@ class ArtistProfileController extends Controller
             'experiences',
             'availabilities' => fn ($q) => $q->where('date', '>=', now()->toDateString())->limit(12),
             'reviews' => fn ($q) => $q->visible()->latest()->limit(20),
+            'posts' => fn ($q) => $q->public()->latest()->limit(20),
         ])->loadCount(['follows', 'favorites']);
 
         $user = auth()->user();

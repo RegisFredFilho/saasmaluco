@@ -1,79 +1,78 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between gap-3">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Denúncias de avaliações</h2>
-            <a href="{{ route('admin.dashboard') }}" class="text-sm text-indigo-600 hover:underline">Voltar ao admin</a>
-        </div>
+        <x-page-header title="Denúncias de avaliações" lead="Moderação de conteúdo reportado.">
+            <x-slot name="actions">
+                <a href="{{ route('admin.dashboard') }}" class="sg-btn-secondary">Voltar ao admin</a>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-4">
-            @if (session('status'))
-                <p class="text-sm text-green-700">{{ session('status') }}</p>
-            @endif
+    <div class="mx-auto max-w-5xl space-y-4">
+        @if (session('status'))
+            <p class="sg-alert-ok">{{ session('status') }}</p>
+        @endif
 
-            <div class="flex gap-3 text-sm">
-                <a href="{{ route('admin.reports.index', ['filter' => 'open']) }}"
-                   class="{{ $filter === 'open' ? 'font-semibold text-indigo-700' : 'text-gray-600 hover:underline' }}">Abertas</a>
-                <a href="{{ route('admin.reports.index', ['filter' => 'resolved']) }}"
-                   class="{{ $filter === 'resolved' ? 'font-semibold text-indigo-700' : 'text-gray-600 hover:underline' }}">Resolvidas</a>
-                <a href="{{ route('admin.reports.index', ['filter' => 'all']) }}"
-                   class="{{ $filter === 'all' ? 'font-semibold text-indigo-700' : 'text-gray-600 hover:underline' }}">Todas</a>
-            </div>
-
-            <div class="bg-white shadow sm:rounded-lg divide-y">
-                @forelse ($reports as $report)
-                    <div class="p-4 space-y-3">
-                        <div class="flex justify-between gap-3">
-                            <div>
-                                <p class="text-sm text-gray-500">Denúncia #{{ $report->id }} · por {{ $report->reporter?->name }}</p>
-                                <p class="font-medium text-gray-900">Motivo: {{ $report->reason }}</p>
-                            </div>
-                            <p class="text-xs text-gray-500 whitespace-nowrap">{{ $report->created_at->format('d/m/Y H:i') }}</p>
-                        </div>
-
-                        @if ($report->review)
-                            <div class="rounded bg-gray-50 p-3 text-sm">
-                                <p class="text-gray-800">Nota {{ $report->review->rating }}/5 — {{ $report->review->author?->name }}</p>
-                                <p class="text-gray-600 mt-1">{{ $report->review->comment ?: '(sem comentário)' }}</p>
-                                @if ($report->review->is_hidden)
-                                    <p class="text-xs text-red-700 mt-2">Oculta: {{ $report->review->hidden_reason }}</p>
-                                @endif
-                            </div>
-                        @endif
-
-                        @if ($report->resolved_at)
-                            <p class="text-xs text-gray-500">
-                                Resolvida ({{ $report->resolution }}) em {{ $report->resolved_at->format('d/m/Y H:i') }}
-                                @if ($report->resolution_note) — {{ $report->resolution_note }} @endif
-                            </p>
-                            @if ($report->review?->is_hidden)
-                                <form method="post" action="{{ route('admin.reviews.unhide', $report->review) }}">
-                                    @csrf
-                                    <x-secondary-button>Reexibir avaliação</x-secondary-button>
-                                </form>
-                            @endif
-                        @else
-                            <div class="grid md:grid-cols-2 gap-3">
-                                <form method="post" action="{{ route('admin.reports.hide', $report) }}" class="space-y-2">
-                                    @csrf
-                                    <x-text-input name="hidden_reason" placeholder="Motivo para ocultar" class="w-full text-sm" required />
-                                    <x-danger-button>Ocultar avaliação</x-danger-button>
-                                </form>
-                                <form method="post" action="{{ route('admin.reports.dismiss', $report) }}" class="space-y-2">
-                                    @csrf
-                                    <x-text-input name="resolution_note" placeholder="Motivo para arquivar" class="w-full text-sm" required />
-                                    <x-secondary-button>Arquivar denúncia</x-secondary-button>
-                                </form>
-                            </div>
-                        @endif
-                    </div>
-                @empty
-                    <div class="p-6 text-sm text-gray-600">Nenhuma denúncia neste filtro.</div>
-                @endforelse
-            </div>
-
-            <div>{{ $reports->links() }}</div>
+        <div class="flex flex-wrap gap-2 text-sm">
+            @foreach (['open' => 'Abertas', 'resolved' => 'Resolvidas', 'all' => 'Todas'] as $key => $label)
+                <a href="{{ route('admin.reports.index', ['filter' => $key]) }}"
+                   class="{{ $filter === $key ? 'sg-btn-primary' : 'sg-btn-secondary' }} !px-3 !py-1.5">{{ $label }}</a>
+            @endforeach
         </div>
+
+        <div class="sg-panel divide-y divide-canvas-line">
+            @forelse ($reports as $report)
+                <div class="space-y-3 p-4">
+                    <div class="flex justify-between gap-3">
+                        <div>
+                            <p class="text-sm text-ink-muted">Denúncia #{{ $report->id }} · por {{ $report->reporter?->name }}</p>
+                            <p class="font-medium text-ink">Motivo: {{ $report->reason }}</p>
+                        </div>
+                        <p class="whitespace-nowrap text-xs text-ink-muted">{{ $report->created_at->format('d/m/Y H:i') }}</p>
+                    </div>
+
+                    @if ($report->review)
+                        <div class="rounded-lg bg-canvas p-3 text-sm">
+                            <p class="text-ink">Nota {{ $report->review->rating }}/5 — {{ $report->review->author?->name }}</p>
+                            <p class="mt-1 text-ink-soft">{{ $report->review->comment ?: '(sem comentário)' }}</p>
+                            @if ($report->review->is_hidden)
+                                <p class="mt-2 text-xs text-red-700">Oculta: {{ $report->review->hidden_reason }}</p>
+                            @endif
+                        </div>
+                    @endif
+
+                    @if ($report->resolved_at)
+                        <p class="text-xs text-ink-muted">
+                            Resolvida ({{ $report->resolution }}) em {{ $report->resolved_at->format('d/m/Y H:i') }}
+                            @if ($report->resolution_note) — {{ $report->resolution_note }} @endif
+                        </p>
+                        @if ($report->review?->is_hidden)
+                            <form method="post" action="{{ route('admin.reviews.unhide', $report->review) }}">
+                                @csrf
+                                <x-secondary-button type="submit">Reexibir avaliação</x-secondary-button>
+                            </form>
+                        @endif
+                    @else
+                        <div class="grid gap-3 md:grid-cols-2">
+                            <form method="post" action="{{ route('admin.reports.hide', $report) }}" class="space-y-2">
+                                @csrf
+                                <x-text-input name="hidden_reason" placeholder="Motivo para ocultar" class="w-full text-sm" required />
+                                <x-danger-button>Ocultar avaliação</x-danger-button>
+                            </form>
+                            <form method="post" action="{{ route('admin.reports.dismiss', $report) }}" class="space-y-2">
+                                @csrf
+                                <x-text-input name="resolution_note" placeholder="Motivo para arquivar" class="w-full text-sm" required />
+                                <x-secondary-button type="submit">Arquivar denúncia</x-secondary-button>
+                            </form>
+                        </div>
+                    @endif
+                </div>
+            @empty
+                <div class="p-6">
+                    <x-empty-state title="Nenhuma denúncia neste filtro" />
+                </div>
+            @endforelse
+        </div>
+
+        <div>{{ $reports->links() }}</div>
     </div>
 </x-app-layout>

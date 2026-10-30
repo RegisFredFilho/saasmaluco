@@ -15,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        View::composer('layouts.navigation', function ($view): void {
+        View::composer(['layouts.navigation', 'layouts.partials.sidebar', 'layouts.partials.topbar', 'layouts.app'], function ($view): void {
             $unread = 0;
             if (auth()->check()) {
                 $unread = AppNotification::query()

@@ -10,8 +10,8 @@
     'favoritesCount' => 0,
 ])
 
-<div {{ $attributes->merge(['class' => 'flex flex-col sm:flex-row sm:items-center gap-3']) }}>
-    <p class="text-sm text-stone-300">
+<div {{ $attributes->merge(['class' => 'flex flex-col gap-3 sm:flex-row sm:items-center']) }}>
+    <p class="text-sm text-ink-muted">
         <span>{{ $followersCount }} seguidor(es)</span>
         <span class="mx-1">·</span>
         <span>{{ $favoritesCount }} favorito(s)</span>
@@ -24,12 +24,12 @@
                     <form method="post" action="{{ $unfollowRoute }}">
                         @csrf
                         @method('delete')
-                        <button type="submit" class="px-3 py-1.5 text-sm border border-white/40 rounded-md hover:bg-white/10">Deixar de seguir</button>
+                        <button type="submit" class="sg-btn-secondary !py-1.5">Deixar de seguir</button>
                     </form>
                 @else
                     <form method="post" action="{{ $followRoute }}">
                         @csrf
-                        <button type="submit" class="px-3 py-1.5 text-sm bg-white text-stone-950 rounded-md">Seguir</button>
+                        <button type="submit" class="sg-btn-primary !py-1.5">Seguir</button>
                     </form>
                 @endif
 
@@ -37,17 +37,17 @@
                     <form method="post" action="{{ $unfavoriteRoute }}">
                         @csrf
                         @method('delete')
-                        <button type="submit" class="px-3 py-1.5 text-sm border border-white/40 rounded-md hover:bg-white/10">Remover favorito</button>
+                        <button type="submit" class="sg-btn-ghost !py-1.5">Remover favorito</button>
                     </form>
                 @else
                     <form method="post" action="{{ $favoriteRoute }}">
                         @csrf
-                        <button type="submit" class="px-3 py-1.5 text-sm border border-white/40 rounded-md hover:bg-white/10">Favoritar</button>
+                        <button type="submit" class="sg-btn-secondary !py-1.5">Favoritar</button>
                     </form>
                 @endif
             </div>
         @endunless
     @else
-        <a href="{{ route('login') }}" class="text-sm underline underline-offset-2">Entre para seguir ou favoritar</a>
+        <a href="{{ route('login') }}" class="text-sm text-accent-fg underline underline-offset-2">Entre para seguir ou favoritar</a>
     @endauth
 </div>
