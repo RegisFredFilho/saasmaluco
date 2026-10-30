@@ -118,10 +118,37 @@ jobs:
           exit-code: '0'
           ignore-unfixed: true
 
+  trivy-image:
+    name: Trivy Docker Image
+    runs-on: ubuntu-24.04
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Build Laravel Docker image
+        run: docker build -t saasmaluco:security .
+
+      - name: Scan Docker image vulnerabilities
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'image'
+          image-ref: 'saasmaluco:security'
+          scanners: 'vuln'
+          vuln-type: 'os,library'
+          format: 'table'
+          severity: 'HIGH,CRITICAL'
+          ignore-unfixed: true
+          exit-code: '0'
+
+
   deploy:
     name: Deploy Homologacao
     runs-on: ubuntu-latest
-    needs: [laravel, frontend, docker-compose, trivy]
+    needs: [laravel, frontend, docker-compose, trivy, trivy-image]
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
 
     permissions:
