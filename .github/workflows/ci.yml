@@ -1,3 +1,4 @@
+
 name: SaaS Maluco CI
 
 on:
@@ -94,12 +95,33 @@ jobs:
         run: |
           docker compose -f compose.yaml config --quiet
           echo "Docker Compose validado com sucesso!"
- 
+
+  trivy:
+    name: Trivy Security
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Scan vulnerabilities and secrets
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          scanners: 'vuln,secret'
+          format: 'table'
+          severity: 'HIGH,CRITICAL'
+          exit-code: '0'
+          ignore-unfixed: true
+
   deploy:
     name: Deploy Homologacao
     runs-on: ubuntu-latest
-    needs: [laravel, frontend, docker-compose]
-
+    needs: [laravel, frontend, docker-compose, trivy]
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
 
     permissions:
@@ -140,4 +162,3 @@ jobs:
             -T \
             deploy@100.104.243.44 \
             "deploy ${{ github.sha }}"
-
