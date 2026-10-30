@@ -42,19 +42,4 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
-
-    public function deactivated(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'deactivated_at' => now(),
-            'deactivation_reason' => 'test',
-        ]);
-    }
-
-    public function platformAdmin(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'is_platform_admin' => true,
-        ]);
-    }
 }

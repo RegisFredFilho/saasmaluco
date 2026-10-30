@@ -27,7 +27,3 @@ Thumbs.db
 # Arquivos temporários
 *.log
 *.tmp
-storage-agent-*.log
-
-# Cursor / local agent scratch (se criado)
-.cursor/*.log

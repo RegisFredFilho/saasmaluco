@@ -1,4 +1,3 @@
-
 name: Homologacao - Teste de Conexao
 
 on:
@@ -34,20 +33,12 @@ jobs:
           printf '%s\n' "$HOMOLOG_SSH_KEY" > ~/.ssh/homolog_deploy
           chmod 600 ~/.ssh/homolog_deploy
 
-      - name: Configurar identidade SSH do servidor
-        env:
-          HOMOLOG_KNOWN_HOSTS: ${{ secrets.HOMOLOG_KNOWN_HOSTS }}
-        run: |
-          printf '%s\n' "$HOMOLOG_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
-
       - name: Testar comando SSH bloqueado
         run: |
           set +e
           OUTPUT=$(ssh \
             -i ~/.ssh/homolog_deploy \
             -o IdentitiesOnly=yes \
-            -o StrictHostKeyChecking=yes \
             -o StrictHostKeyChecking=accept-new \
             -o ConnectTimeout=15 \
             -T deploy@100.104.243.44 whoami 2>&1)
