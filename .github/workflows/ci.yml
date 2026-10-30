@@ -72,7 +72,10 @@ jobs:
 
       - name: Install frontend dependencies
         run: npm ci
- 
+
+      - name: Build frontend assets
+        run: npm run build
+
   docker-compose:
     name: Docker Compose Validation
     runs-on: ubuntu-latest

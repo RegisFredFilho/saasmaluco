@@ -49,15 +49,12 @@ services:
 
   redis:
     image: redis:alpine
-<<<<<<< Updated upstream
     restart: unless-stopped
-=======
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 3s
       retries: 10
->>>>>>> Stashed changes
     networks:
       - saas
 
