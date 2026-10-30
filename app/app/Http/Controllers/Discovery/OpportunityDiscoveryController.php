@@ -3,14 +3,18 @@
 namespace App\Http\Controllers\Discovery;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Discovery\Concerns\RespondsWithDiscoveryPage;
 use App\Models\Genre;
 use App\Models\Opportunity;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class OpportunityDiscoveryController extends Controller
 {
-    public function index(Request $request): View
+    use RespondsWithDiscoveryPage;
+
+    public function index(Request $request): View|Response
     {
         $filters = $request->validate([
             'q' => ['nullable', 'string', 'max:120'],
@@ -19,11 +23,23 @@ class OpportunityDiscoveryController extends Controller
             'genre_id' => ['nullable', 'integer', 'exists:genres,id'],
             'event_from' => ['nullable', 'date'],
             'event_to' => ['nullable', 'date', 'after_or_equal:event_from'],
+            'per_page' => ['nullable', 'integer', 'min:6', 'max:24'],
         ]);
 
         $opportunities = Opportunity::query()
             ->discoverable()
-            ->with(['venueProfile', 'genres'])
+            ->select([
+                'id',
+                'venue_profile_id',
+                'title',
+                'status',
+                'event_date',
+                'location_label',
+            ])
+            ->with([
+                'venueProfile:id,slug,display_name,city,state,is_public',
+                'genres:id,name,slug',
+            ])
             ->when($filters['q'] ?? null, function ($query, $q) {
                 $term = '%'.$q.'%';
                 $query->where(function ($inner) use ($term) {
@@ -44,13 +60,19 @@ class OpportunityDiscoveryController extends Controller
             ->when($filters['event_to'] ?? null, fn ($query, $to) => $query->whereDate('event_date', '<=', $to))
             ->orderBy('event_date')
             ->orderBy('title')
-            ->paginate(12)
+            ->paginate($this->discoveryPerPage($request))
             ->withQueryString();
 
-        return view('discover.opportunities', [
-            'opportunities' => $opportunities,
-            'filters' => $filters,
-            'genres' => Genre::query()->orderBy('name')->get(),
-        ]);
+        return $this->discoveryResponse(
+            $request,
+            $opportunities,
+            'discover.opportunities',
+            'discover.partials.opportunity-items',
+            'opportunities',
+            [
+                'filters' => $filters,
+                'genres' => Genre::query()->orderBy('name')->get(['id', 'name']),
+            ],
+        );
     }
 }

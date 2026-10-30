@@ -236,8 +236,8 @@ Disponibilidade informada ≠ booking confirmado.
 
 ### Descoberta (Etapa 5)
 
-- **D17 confirmada (MVP):** para entrar na busca, artista/estabelecimento precisa ser `is_public` **e** ter `city` + `state` preenchidos. Oportunidade aparece só se `status = open` e o venue for descoberta.
-- Listagens públicas paginadas (12/página); filtros no servidor (q, cidade, UF, região/artista, gênero, tipo, datas).
+- **D17 confirmada (MVP):** entra na listagem quem é `is_public`. Cidade/UF (e demais critérios) são **filtros opcionais**, não requisito para aparecer. Oportunidade aparece só se `status = open` e o venue for público.
+- Listagens públicas paginadas (12/página, até 24); “carregar mais” via fragmento HTML; filtros no servidor (q, cidade, UF, região/artista, gênero, tipo, datas).
 - Listas **não** expõem e-mail/telefone de conta nem contato profissional do venue (só na página pública do espaço, se o gestor publicou).
 - Índices: `is_public`, geo `(is_public, city, state)`, `kind`/`region` (artista), `(status, event_date)` (oportunidades).
 

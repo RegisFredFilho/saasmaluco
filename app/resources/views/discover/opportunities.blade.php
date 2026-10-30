@@ -5,7 +5,7 @@
 @section('content')
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-semibold tracking-tight">Oportunidades</h1>
-        <p class="text-stone-600 mt-1 text-sm">Vagas abertas em estabelecimentos públicos. Localização vem do espaço.</p>
+        <p class="text-stone-600 mt-1 text-sm">Vagas abertas em estabelecimentos públicos. Filtros são opcionais.</p>
     </div>
 
     <form method="get" action="{{ route('opportunities.index') }}" class="bg-white border border-stone-200 rounded-lg p-4 mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -44,33 +44,35 @@
         </div>
     </form>
 
-    <p class="text-sm text-stone-500 mb-4">{{ $opportunities->total() }} resultado(s)</p>
+    <div
+        x-data="discoveryInfinite({ nextUrl: @js($opportunities->nextPageUrl()) })"
+        class="space-y-4"
+    >
+        <p class="text-sm text-stone-500">{{ $opportunities->total() }} resultado(s)</p>
 
-    <ul class="space-y-3">
-        @forelse ($opportunities as $opportunity)
-            <li>
-                <a href="{{ route('opportunities.show', $opportunity) }}" class="block bg-white border border-stone-200 rounded-lg p-4 hover:border-stone-400 transition-colors">
-                    <h2 class="font-medium text-stone-900">{{ $opportunity->title }}</h2>
-                    <p class="text-sm text-stone-600 mt-1">
-                        {{ $opportunity->venueProfile->display_name }}
-                        · {{ $opportunity->venueProfile->city }}/{{ $opportunity->venueProfile->state }}
-                        @if ($opportunity->event_date)
-                            · {{ $opportunity->event_date->format('d/m/Y') }}
-                        @endif
-                    </p>
-                    @if ($opportunity->genres->isNotEmpty())
-                        <p class="text-xs text-stone-500 mt-1 truncate">{{ $opportunity->genres->pluck('name')->join(', ') }}</p>
-                    @endif
-                </a>
-            </li>
-        @empty
-            <li class="bg-white border border-stone-200 rounded-lg p-6 text-stone-600 text-sm">
-                Nenhuma oportunidade aberta encontrada.
-            </li>
-        @endforelse
-    </ul>
+        <ul x-ref="list" class="space-y-3">
+            @if ($opportunities->isNotEmpty())
+                @include('discover.partials.opportunity-items', ['opportunities' => $opportunities])
+            @else
+                <li class="bg-white border border-stone-200 rounded-lg p-6 text-stone-600 text-sm">
+                    Nenhuma oportunidade aberta no momento.
+                </li>
+            @endif
+        </ul>
 
-    <div class="mt-6">
-        {{ $opportunities->links() }}
+        <div class="pt-2 flex flex-col items-center gap-3">
+            <button
+                type="button"
+                x-show="nextUrl"
+                x-cloak
+                @click="loadMore"
+                :disabled="loading"
+                class="px-4 py-2 border border-stone-300 rounded-md text-sm text-stone-800 hover:bg-white disabled:opacity-60"
+                x-text="loading ? 'Carregando…' : 'Carregar mais'"
+            ></button>
+            <noscript>
+                <div class="mt-2">{{ $opportunities->links() }}</div>
+            </noscript>
+        </div>
     </div>
 @endsection

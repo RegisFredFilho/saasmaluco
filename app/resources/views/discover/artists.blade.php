@@ -5,7 +5,7 @@
 @section('content')
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-semibold tracking-tight">Artistas</h1>
-        <p class="text-stone-600 mt-1 text-sm">Perfis públicos com cidade e UF. Filtre por local, tipo ou gênero.</p>
+        <p class="text-stone-600 mt-1 text-sm">Listagem pública. Use os filtros se quiser refinar — não são obrigatórios.</p>
     </div>
 
     <form method="get" action="{{ route('artists.index') }}" class="bg-white border border-stone-200 rounded-lg p-4 mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -58,42 +58,35 @@
         </div>
     </form>
 
-    <p class="text-sm text-stone-500 mb-4">{{ $artists->total() }} resultado(s)</p>
+    <div
+        x-data="discoveryInfinite({ nextUrl: @js($artists->nextPageUrl()) })"
+        class="space-y-4"
+    >
+        <p class="text-sm text-stone-500">{{ $artists->total() }} resultado(s)</p>
 
-    <ul class="space-y-3">
-        @forelse ($artists as $artist)
-            <li>
-                <a href="{{ route('artists.show', $artist) }}" class="flex gap-4 bg-white border border-stone-200 rounded-lg p-4 hover:border-stone-400 transition-colors">
-                    @if ($artist->photoUrl())
-                        <img src="{{ $artist->photoUrl() }}" alt="" class="h-16 w-16 rounded-full object-cover shrink-0">
-                    @else
-                        <div class="h-16 w-16 rounded-full bg-stone-200 shrink-0 flex items-center justify-center font-semibold text-stone-600">
-                            {{ strtoupper(mb_substr($artist->publicName(), 0, 1)) }}
-                        </div>
-                    @endif
-                    <div class="min-w-0">
-                        <h2 class="font-medium text-stone-900 truncate">{{ $artist->publicName() }}</h2>
-                        <p class="text-sm text-stone-600">
-                            {{ $artist->kind->label() }}
-                            · {{ $artist->city }}/{{ $artist->state }}
-                            @if ($artist->region)
-                                · {{ $artist->region }}
-                            @endif
-                        </p>
-                        @if ($artist->genres->isNotEmpty())
-                            <p class="text-xs text-stone-500 mt-1 truncate">{{ $artist->genres->pluck('name')->join(', ') }}</p>
-                        @endif
-                    </div>
-                </a>
-            </li>
-        @empty
-            <li class="bg-white border border-stone-200 rounded-lg p-6 text-stone-600 text-sm">
-                Nenhum artista encontrado com esses filtros.
-            </li>
-        @endforelse
-    </ul>
+        <ul x-ref="list" class="space-y-3">
+            @if ($artists->isNotEmpty())
+                @include('discover.partials.artist-items', ['artists' => $artists])
+            @else
+                <li class="bg-white border border-stone-200 rounded-lg p-6 text-stone-600 text-sm">
+                    Nenhum artista público cadastrado ainda.
+                </li>
+            @endif
+        </ul>
 
-    <div class="mt-6">
-        {{ $artists->links() }}
+        <div class="pt-2 flex flex-col items-center gap-3">
+            <button
+                type="button"
+                x-show="nextUrl"
+                x-cloak
+                @click="loadMore"
+                :disabled="loading"
+                class="px-4 py-2 border border-stone-300 rounded-md text-sm text-stone-800 hover:bg-white disabled:opacity-60"
+                x-text="loading ? 'Carregando…' : 'Carregar mais'"
+            ></button>
+            <noscript>
+                <div class="mt-2">{{ $artists->links() }}</div>
+            </noscript>
+        </div>
     </div>
 @endsection
