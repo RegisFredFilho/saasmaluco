@@ -24,4 +24,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# php-fpm (www-data = 33) precisa escrever views compiladas em VIEW_COMPILED_PATH.
+RUN mkdir -p /tmp/laravel-views && chown www-data:www-data /tmp/laravel-views
+
 WORKDIR /var/www/html

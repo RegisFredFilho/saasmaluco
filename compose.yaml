@@ -7,11 +7,14 @@ services:
     restart: unless-stopped
     working_dir: /var/www/html
     environment:
-      # Evita "touch(): Utime failed" no Windows (bind mount não permite utime).
+      # Views compiladas FORA do bind mount (Windows: utime no storage falha).
+      # Diretório no filesystem do container (sem volume) — touch/utime funciona.
       VIEW_COMPILED_PATH: /tmp/laravel-views
     volumes:
       - ./app:/var/www/html
-      - laravel_views:/tmp/laravel-views
+    # Garante o diretório a cada start (imagem + tmpfs limpo).
+    tmpfs:
+      - /tmp/laravel-views:mode=1777,size=64m
     depends_on:
       mysql:
         condition: service_healthy
@@ -93,4 +96,3 @@ networks:
 volumes:
   mysql_data:
   node_modules:
-  laravel_views:
