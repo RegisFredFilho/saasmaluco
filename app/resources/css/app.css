@@ -1,3 +1,184 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        --sg-ink: #eef1f8;
+        --sg-ink-soft: #b8c0d4;
+        --sg-ink-muted: #7e879c;
+        --sg-canvas: #070a12;
+        --sg-elev: #111627;
+        --sg-line: #1f2640;
+        --sg-accent: #4f7cff;
+        --sg-accent-hover: #3d68f0;
+        --sg-vibe: #9b6bff;
+        --sg-radius: 0.875rem;
+    }
+
+    html {
+        @apply scroll-smooth;
+    }
+
+    body {
+        @apply bg-canvas text-ink antialiased;
+    }
+
+    ::selection {
+        @apply bg-accent/40 text-ink;
+    }
+}
+
+@layer components {
+    .sg-shell {
+        @apply min-h-screen bg-canvas text-ink;
+    }
+
+    .sg-sidebar {
+        @apply flex h-full w-64 flex-col border-r border-canvas-line bg-canvas-elev/95 backdrop-blur-xl;
+    }
+
+    .sg-sidebar.is-collapsed {
+        @apply w-[4.5rem];
+    }
+
+    .sg-nav-link {
+        @apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-ink-soft transition;
+    }
+
+    .sg-nav-link:hover {
+        @apply bg-canvas-mist text-ink;
+    }
+
+    .sg-nav-link.is-active {
+        @apply bg-accent-soft text-accent-fg shadow-glow;
+    }
+
+    .sg-nav-section {
+        @apply px-3 pb-2 pt-5 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted;
+    }
+
+    .sg-topbar {
+        @apply sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-canvas-line bg-canvas/80 px-4 backdrop-blur-xl md:px-6;
+    }
+
+    .sg-main {
+        @apply mx-auto w-full max-w-content px-4 py-6 md:px-6 md:py-8;
+    }
+
+    .sg-panel {
+        @apply rounded-[var(--sg-radius)] border border-canvas-line bg-canvas-elev/90 shadow-panel;
+    }
+
+    .sg-panel-glass {
+        @apply rounded-[var(--sg-radius)] border border-white/10 bg-white/[0.03] backdrop-blur-md;
+    }
+
+    .sg-page-title {
+        @apply font-display text-2xl font-semibold tracking-tight text-ink md:text-3xl;
+    }
+
+    .sg-page-lead {
+        @apply mt-1 text-sm text-ink-muted md:text-base;
+    }
+
+    .sg-label {
+        @apply mb-1.5 block text-xs font-medium text-ink-muted;
+    }
+
+    .sg-input {
+        @apply w-full rounded-xl border-canvas-line bg-canvas-mist text-sm text-ink shadow-none placeholder:text-ink-muted/70 focus:border-accent focus:ring-accent/40;
+    }
+
+    .sg-btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-accent/40 focus:ring-offset-2 focus:ring-offset-canvas;
+    }
+
+    .sg-btn-primary {
+        @apply sg-btn bg-accent text-white hover:bg-accent-hover;
+    }
+
+    .sg-btn-secondary {
+        @apply sg-btn border border-canvas-line bg-canvas-elev text-ink-soft hover:border-accent/40 hover:bg-canvas-mist hover:text-ink;
+    }
+
+    .sg-btn-ghost {
+        @apply sg-btn text-ink-soft hover:bg-canvas-mist hover:text-ink;
+    }
+
+    .sg-btn-vibe {
+        @apply sg-btn bg-vibe text-white hover:brightness-110;
+    }
+
+    .sg-btn-danger {
+        @apply sg-btn bg-red-600/90 text-white hover:bg-red-500;
+    }
+
+    .sg-badge {
+        @apply inline-flex items-center rounded-lg px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide;
+    }
+
+    .sg-badge-neutral {
+        @apply sg-badge bg-canvas-mist text-ink-soft;
+    }
+
+    .sg-badge-accent {
+        @apply sg-badge bg-accent-soft text-accent-fg;
+    }
+
+    .sg-badge-vibe {
+        @apply sg-badge bg-vibe-soft text-vibe-fg;
+    }
+
+    .sg-badge-warn {
+        @apply sg-badge bg-amber-500/15 text-amber-300;
+    }
+
+    .sg-badge-ok {
+        @apply sg-badge bg-emerald-500/15 text-emerald-300;
+    }
+
+    .sg-empty {
+        @apply rounded-[var(--sg-radius)] border border-dashed border-canvas-line bg-canvas-elev/50 px-6 py-12 text-center text-sm text-ink-muted;
+    }
+
+    .sg-list-row {
+        @apply block rounded-[var(--sg-radius)] border border-canvas-line bg-canvas-elev p-4 transition hover:border-accent/35 hover:bg-canvas-mist;
+    }
+
+    .sg-filter-bar {
+        @apply sg-panel grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3;
+    }
+
+    .sg-media {
+        @apply relative overflow-hidden bg-canvas-mist;
+    }
+
+    .sg-media-overlay {
+        @apply absolute inset-0 bg-gradient-to-t from-canvas via-canvas/50 to-transparent;
+    }
+
+    .sg-hero {
+        @apply relative overflow-hidden rounded-2xl border border-canvas-line;
+    }
+
+    .sg-chip {
+        @apply inline-flex items-center rounded-full border border-canvas-line bg-canvas-elev px-3 py-1 text-xs font-medium text-ink-soft transition hover:border-accent/40 hover:text-ink;
+    }
+
+    .sg-chip.is-active {
+        @apply border-accent/50 bg-accent-soft text-accent-fg;
+    }
+
+    .sg-mobile-nav {
+        @apply fixed inset-x-0 bottom-0 z-40 border-t border-canvas-line bg-canvas-elev/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden;
+    }
+
+    .sg-alert-ok {
+        @apply rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300;
+    }
+
+    .sg-alert-err {
+        @apply rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-300;
+    }
+}

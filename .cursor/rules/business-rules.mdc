@@ -14,5 +14,7 @@ alwaysApply: true
 - Show concluído só com processo explícito — não só porque a data passou.
 - Experiência verificada exige origem rastreável (booking elegível).
 - Avaliações só por participantes elegíveis; escala e limites validados no servidor.
-- Seguir/favoritar ≠ contratação.
-- Fora do MVP: pagamentos, ticketing, comissão, IA, microserviços, app Flutter.
+- Seguir/favoritar ≠ contratação; Follow ≠ Favorite ≠ Connection (D31).
+- Posts: `author_user_id` + publisher morph; só quem manage o perfil publica em nome dele (D29–D30).
+- Mensagens sociais ≠ conversas comerciais (D34). Rede complementa o marketplace; não o substitui.
+- Fora do MVP: pagamentos, ticketing, comissão, IA, microserviços, app Flutter, push.

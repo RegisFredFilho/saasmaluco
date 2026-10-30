@@ -130,12 +130,27 @@ Manter **monólito modular Laravel** na pasta `app/`, com:
 
 ```
 User (conta autenticada)
-  ├── ArtistProfile (1..n possíveis, se confirmado)
-  ├── VenueProfile (1..n possíveis, se confirmado)
+  ├── ArtistProfile (1..n)
+  ├── VenueProfile (1..n)
   └── Admin (papel de plataforma — separado)
 ```
 
-Perfis profissionais **não** substituem a conta. Bandas devem poder ter membros sem compartilhar credenciais pessoais (modelagem na Etapa 2–3).
+Perfis profissionais **não** substituem a conta. Bandas: `artist_members` sem compartilhar credenciais.
+
+### Módulo Social / rede profissional (pós-Etapa 20)
+
+Evolução **modular** no monólito — sem microserviços e sem reutilizar o funil comercial:
+
+| Peça | Responsabilidade |
+|------|------------------|
+| `posts` + `PostPolicy` | Publicações; `author_user_id` + `publisher` morph (D29–D30) |
+| `Http/Controllers/Social/*` | CRUD de posts e, depois, interações |
+| `Services/Social/*` ou Actions | Casos de uso (criar post, montar feed) |
+| Follow / Favorite (já existem) | Uni / salvar; alimentam feed Seguindo (D31–D33) |
+| `connections` (futuro) | Bilateral User↔User |
+| `social_conversations` (futuro) | DM networking ≠ `conversations` marketplace (D34) |
+
+Marketplace (`Opportunity` → `Application` → `Conversation` → `Proposal` → `Booking`) permanece a fonte da verdade comercial.
 
 ### API (`/api/v1` — Etapa 13)
 

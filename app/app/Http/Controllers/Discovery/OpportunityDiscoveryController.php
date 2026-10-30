@@ -35,6 +35,10 @@ class OpportunityDiscoveryController extends Controller
                 'status',
                 'event_date',
                 'location_label',
+                'budget_min',
+                'budget_max',
+                'currency',
+                'created_at',
             ])
             ->with([
                 'venueProfile:id,slug,display_name,city,state,is_public',

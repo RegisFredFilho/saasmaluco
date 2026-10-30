@@ -1,10 +1,10 @@
 <section class="space-y-6">
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-lg font-medium text-ink">
             Desativar conta
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-1 text-sm text-ink-muted">
             A conta será desativada (soft-disable): o login será bloqueado e os perfis deixam de ser tratados como ativos.
             Os dados são retidos conforme a política do produto — não é exclusão imediata irreversível.
         </p>
@@ -20,11 +20,11 @@
             @csrf
             @method('delete')
 
-            <h2 class="text-lg font-medium text-gray-900">
+            <h2 class="text-lg font-medium text-ink">
                 Confirmar desativação
             </h2>
 
-            <p class="mt-1 text-sm text-gray-600">
+            <p class="mt-1 text-sm text-ink-muted">
                 Informe sua senha para desativar a conta.
             </p>
 

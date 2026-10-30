@@ -197,15 +197,30 @@ Disponibilidade informada ≠ booking confirmado.
 1. Seguir ≠ contratação ≠ conexão comercial formal.
 2. Favoritos e follows sem duplicidade (unicidade no banco).
 3. Contagens devem refletir dados reais.
-4. Evitar rede social genérica (curtidas/comentários/stories) no MVP.
+4. A rede profissional **complementa** o marketplace; não substitui oportunidades, candidaturas, propostas nem bookings.
+5. Mensagens sociais (quando existirem) são **independentes** das conversas comerciais (`conversations` / `messages` / `proposals`).
 
-### Decisões da Etapa 6
+### Decisões da Etapa 6 (follow / favorite)
 
-5. Alvos: perfis públicos de artista e estabelecimento (morph `follows` / `favorites`).
-6. Usuário autenticado e ativo; não pode seguir/favoritar o próprio perfil.
-7. Só perfis `is_public` (privados: 403 se sem autorização de view).
-8. Contagens na página pública = `COUNT` real (`follows_count` / `favorites_count`).
-9. Feed simples em `/rede`: oportunidades `open` de estabelecimentos seguidos (não é timeline social).
+6. Alvos: perfis públicos de artista e estabelecimento (morph `follows` / `favorites`).
+7. Usuário autenticado e ativo; não pode seguir/favoritar o próprio perfil.
+8. Só perfis `is_public` (privados: 403 se sem autorização de view).
+9. Contagens na página pública = `COUNT` real (`follows_count` / `favorites_count`).
+
+### Decisões da evolução rede (pós-MVP marketplace) — D29–D34
+
+| ID | Decisão |
+|----|---------|
+| D29 | **AuthorActor:** todo post tem `author_user_id` (quem digitou) + `publisher` polimórfico (`User` \| `ArtistProfile` \| `VenueProfile`) — quem aparece no feed/perfil. |
+| D30 | Publicar em nome de perfil profissional exige a mesma autorização de `update`/`manage` desse perfil. Publicar como `User` exige conta ativa. |
+| D31 | **Follow** (uni) alimenta o feed “Seguindo”; **Favorite** = salvar para depois; **Connection** (bilateral User↔User, etapas futuras) ≠ follow. |
+| D32 | Interações sociais permitidas **sobre posts** (reações/comentários/shares em etapas futuras). Sem stories. Escopo profissional: CTAs para perfil e oportunidades. |
+| D33 | Feed “Seguindo”: posts públicos de publishers seguidos (artista/venue) **e** oportunidades `open` de venues seguidos; cards de oportunidade visualmente distintos. |
+| D34 | Inbox dual: **Negociações** (marketplace) permanece; **Mensagens** sociais usam tabelas próprias (não reutilizar `conversations`). |
+
+### Supersessão
+
+A regra antiga “evitar curtidas/comentários/stories no MVP” aplica-se ao **MVP marketplace (etapas 0–19)**. A partir da evolução rede (D29+), interações em posts são permitidas conforme o roadmap de etapas B–D — sem transformar o produto em rede social genérica.
 
 ---
 

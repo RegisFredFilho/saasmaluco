@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-lg font-medium text-ink">
             Informações da conta
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-1 text-sm text-ink-muted">
             Atualize seus dados básicos, localização, foto e preferências.
         </p>
     </header>
@@ -21,15 +21,15 @@
             @if ($user->avatarUrl())
                 <img src="{{ $user->avatarUrl() }}" alt="Foto de perfil" class="h-16 w-16 rounded-full object-cover">
             @else
-                <div class="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
+                <div class="flex h-16 w-16 items-center justify-center rounded-full bg-canvas text-sm text-ink-muted">
                     Sem foto
                 </div>
             @endif
             <div class="flex-1">
                 <x-input-label for="avatar" value="Foto de perfil" />
                 <input id="avatar" name="avatar" type="file" accept="image/jpeg,image/png,image/webp"
-                       class="mt-1 block w-full text-sm text-gray-600">
-                <p class="mt-1 text-xs text-gray-500">JPEG, PNG ou WebP — máx. 2 MB</p>
+                       class="mt-1 block w-full text-sm text-ink-muted">
+                <p class="mt-1 text-xs text-ink-muted">JPEG, PNG ou WebP — máx. 2 MB</p>
                 <x-input-error class="mt-2" :messages="$errors->get('avatar')" />
             </div>
         </div>
@@ -67,7 +67,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
                 <x-input-label for="locale" value="Idioma" />
-                <select id="locale" name="locale" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                <select id="locale" name="locale" class="sg-input mt-1">
                     @php($locale = old('locale', data_get($user->preferences, 'locale', 'pt_BR')))
                     <option value="pt_BR" @selected($locale === 'pt_BR')>Português (Brasil)</option>
                     <option value="en" @selected($locale === 'en')>English</option>
@@ -75,8 +75,8 @@
                 <x-input-error class="mt-2" :messages="$errors->get('locale')" />
             </div>
             <div class="flex items-end pb-2">
-                <label class="inline-flex items-center gap-2 text-sm text-gray-700">
-                    <input type="checkbox" name="notify_email" value="1" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                <label class="inline-flex items-center gap-2 text-sm text-ink-soft">
+                    <input type="checkbox" name="notify_email" value="1" class="rounded border-canvas-line text-accent shadow-sm focus:ring-accent"
                         @checked(old('notify_email', data_get($user->preferences, 'notify_email', true)))>
                     Receber e-mails de notificação
                 </label>
@@ -87,7 +87,7 @@
             <x-primary-button>Salvar</x-primary-button>
 
             @if (session('status') === 'profile-updated')
-                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600">
+                <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-ink-muted">
                     Salvo.
                 </p>
             @endif

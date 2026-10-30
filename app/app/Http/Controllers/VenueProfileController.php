@@ -79,6 +79,7 @@ class VenueProfileController extends Controller
                 ->latest('event_date')
                 ->limit(10),
             'reviews' => fn ($q) => $q->visible()->latest()->limit(20),
+            'posts' => fn ($q) => $q->public()->latest()->limit(20),
         ])->loadCount(['follows', 'favorites']);
 
         $user = auth()->user();
