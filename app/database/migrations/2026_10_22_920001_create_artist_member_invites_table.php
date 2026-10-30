@@ -18,8 +18,12 @@ return new class extends Migration
             $table->timestamp('responded_at')->nullable();
             $table->timestamps();
 
-            $table->index(['artist_profile_id', 'invited_user_id', 'status']);
-            $table->index(['invited_user_id', 'status']);
+            // Nome explícito: o auto-gerado ultrapassa o limite de 64 chars do MySQL.
+            $table->index(
+                ['artist_profile_id', 'invited_user_id', 'status'],
+                'ami_profile_user_status_idx'
+            );
+            $table->index(['invited_user_id', 'status'], 'ami_user_status_idx');
         });
     }
 
