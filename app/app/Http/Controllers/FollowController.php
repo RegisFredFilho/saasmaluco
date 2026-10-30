@@ -6,9 +6,9 @@ use App\Models\ArtistProfile;
 use App\Models\Follow;
 use App\Models\VenueProfile;
 use App\Support\NetworkTarget;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Model;
 
 class FollowController extends Controller
 {

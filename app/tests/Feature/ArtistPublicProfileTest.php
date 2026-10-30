@@ -8,6 +8,7 @@ use App\Models\ArtistExperience;
 use App\Models\ArtistProfile;
 use App\Models\Genre;
 use App\Models\User;
+use Database\Seeders\GenreSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -20,7 +21,7 @@ class ArtistPublicProfileTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\Database\Seeders\GenreSeeder::class);
+        $this->seed(GenreSeeder::class);
     }
 
     public function test_public_artist_page_is_visible_to_guests(): void

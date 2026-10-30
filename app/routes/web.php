@@ -3,8 +3,8 @@
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ReviewReportController as AdminReviewReportController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
-use App\Http\Controllers\AppNotificationController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\AppNotificationController;
 use App\Http\Controllers\ArtistMemberInviteController;
 use App\Http\Controllers\ArtistProfileController;
 use App\Http\Controllers\BookingController;

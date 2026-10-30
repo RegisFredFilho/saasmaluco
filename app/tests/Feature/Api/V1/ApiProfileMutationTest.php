@@ -3,9 +3,7 @@
 namespace Tests\Feature\Api\V1;
 
 use App\Enums\ArtistKind;
-use App\Models\ArtistProfile;
 use App\Models\User;
-use App\Models\VenueProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;

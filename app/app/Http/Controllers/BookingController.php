@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\BookingStatus;
 use App\Models\ArtistProfile;
 use App\Models\Booking;
+use App\Models\Review;
 use App\Models\VenueProfile;
 use App\Services\InAppNotifier;
 use Illuminate\Http\RedirectResponse;
@@ -68,7 +69,7 @@ class BookingController extends Controller
             'booking' => $booking,
             'isArtistSide' => $user->can('update', $booking->artistProfile),
             'isVenueSide' => $user->can('manageOpportunities', $booking->venueProfile),
-            'canReview' => $user ? $user->can('create', [\App\Models\Review::class, $booking]) : false,
+            'canReview' => $user ? $user->can('create', [Review::class, $booking]) : false,
         ]);
     }
 

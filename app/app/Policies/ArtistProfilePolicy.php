@@ -63,4 +63,3 @@ class ArtistProfilePolicy
         return $membership !== null && $membership->role->canManage();
     }
 }
-

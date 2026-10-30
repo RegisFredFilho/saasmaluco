@@ -2,10 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Proposal;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin \App\Models\Proposal */
+/** @mixin Proposal */
 class ProposalResource extends JsonResource
 {
     /**

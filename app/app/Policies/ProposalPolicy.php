@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Enums\ProposalStatus;
 use App\Models\Proposal;
 use App\Models\User;
 

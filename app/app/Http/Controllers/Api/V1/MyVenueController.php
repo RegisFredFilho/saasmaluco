@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\VenueManagerRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateVenueProfileRequest;
 use App\Http\Resources\VenueResource;
 use App\Models\User;
 use App\Models\VenueManager;
 use App\Models\VenueProfile;
-use App\Enums\VenueManagerRole;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ReviewAuthorSide;
-use App\Models\ArtistProfile;
 use App\Models\Booking;
 use App\Models\Review;
 use App\Models\ReviewReport;
 use App\Models\VenueProfile;
+use App\Policies\ReviewPolicy;
 use App\Services\AdminAuditor;
 use App\Services\InAppNotifier;
 use Illuminate\Http\RedirectResponse;
@@ -27,7 +27,7 @@ class ReviewController extends Controller
         ]);
 
         /** @var ReviewAuthorSide $side */
-        $side = app(\App\Policies\ReviewPolicy::class)->sideFor($request->user(), $booking);
+        $side = app(ReviewPolicy::class)->sideFor($request->user(), $booking);
 
         $rateable = $side === ReviewAuthorSide::Artist
             ? $booking->venueProfile

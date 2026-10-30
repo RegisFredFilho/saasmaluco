@@ -9,6 +9,7 @@ use App\Models\Genre;
 use App\Models\Opportunity;
 use App\Models\User;
 use App\Models\VenueProfile;
+use Database\Seeders\GenreSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -19,7 +20,7 @@ class DiscoveryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\Database\Seeders\GenreSeeder::class);
+        $this->seed(GenreSeeder::class);
     }
 
     public function test_discoverable_artists_appear_in_list_and_incomplete_are_hidden(): void

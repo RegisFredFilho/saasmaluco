@@ -10,6 +10,7 @@ use App\Models\Opportunity;
 use App\Models\User;
 use App\Models\VenueManager;
 use App\Models\VenueProfile;
+use Database\Seeders\GenreSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -22,7 +23,7 @@ class VenuePublicProfileTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\Database\Seeders\GenreSeeder::class);
+        $this->seed(GenreSeeder::class);
     }
 
     public function test_public_venue_page_is_visible_to_guests(): void

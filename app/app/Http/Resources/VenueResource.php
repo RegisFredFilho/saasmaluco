@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources;
 
+use App\Models\VenueProfile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
-/** @mixin \App\Models\VenueProfile */
+/** @mixin VenueProfile */
 class VenueResource extends JsonResource
 {
     /**

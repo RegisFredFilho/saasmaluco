@@ -13,9 +13,7 @@ class AppNotificationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public AppNotification $notification)
-    {
-    }
+    public function __construct(public AppNotification $notification) {}
 
     public function envelope(): Envelope
     {
