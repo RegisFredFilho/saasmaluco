@@ -1,0 +1,16 @@
+---
+description: Banco de dados, migrations e integridade
+globs: app/database/**/*.php,app/app/Models/**/*.php
+alwaysApply: false
+---
+
+# Banco de dados
+
+- Alterar schema só via migrations versionadas em `app/database/migrations`.
+- Usar Eloquent/Query Builder; sem SQL interpolado com input do usuário.
+- Dinheiro: `decimal`/`bcmath`, nunca float.
+- Datas de compromisso: padrão consistente (preferir UTC no armazenamento); documentar fuso.
+- Unicidades e FKs no banco (follows, favorites, candidaturas, etc.).
+- Índices para filtros frequentes (cidade, gênero, data, status).
+- Soft-delete/retenção conforme `docs/BUSINESS_RULES.md` — não inventar exclusão irreversível.
+- Preferir relacionamentos normalizados a listas CSV.
