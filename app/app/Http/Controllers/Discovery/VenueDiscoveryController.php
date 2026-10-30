@@ -4,15 +4,19 @@ namespace App\Http\Controllers\Discovery;
 
 use App\Enums\VenueEventType;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Discovery\Concerns\RespondsWithDiscoveryPage;
 use App\Models\Genre;
 use App\Models\VenueProfile;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class VenueDiscoveryController extends Controller
 {
-    public function index(Request $request): View
+    use RespondsWithDiscoveryPage;
+
+    public function index(Request $request): View|Response
     {
         $filters = $request->validate([
             'q' => ['nullable', 'string', 'max:120'],
@@ -20,11 +24,23 @@ class VenueDiscoveryController extends Controller
             'state' => ['nullable', 'string', 'max:120'],
             'event_type' => ['nullable', Rule::enum(VenueEventType::class)],
             'genre_id' => ['nullable', 'integer', 'exists:genres,id'],
+            'per_page' => ['nullable', 'integer', 'min:6', 'max:24'],
         ]);
 
         $venues = VenueProfile::query()
             ->discoverable()
-            ->with('genres')
+            ->select([
+                'id',
+                'slug',
+                'display_name',
+                'city',
+                'state',
+                'event_type',
+                'capacity',
+                'cover_path',
+                'is_public',
+            ])
+            ->with('genres:id,name,slug')
             ->when($filters['q'] ?? null, function ($query, $q) {
                 $query->where('display_name', 'like', '%'.$q.'%');
             })
@@ -35,14 +51,20 @@ class VenueDiscoveryController extends Controller
                 $query->whereHas('genres', fn ($q) => $q->where('genres.id', $genreId));
             })
             ->orderBy('display_name')
-            ->paginate(12)
+            ->paginate($this->discoveryPerPage($request))
             ->withQueryString();
 
-        return view('discover.venues', [
-            'venues' => $venues,
-            'filters' => $filters,
-            'genres' => Genre::query()->orderBy('name')->get(),
-            'eventTypes' => VenueEventType::cases(),
-        ]);
+        return $this->discoveryResponse(
+            $request,
+            $venues,
+            'discover.venues',
+            'discover.partials.venue-items',
+            'venues',
+            [
+                'filters' => $filters,
+                'genres' => Genre::query()->orderBy('name')->get(['id', 'name']),
+                'eventTypes' => VenueEventType::cases(),
+            ],
+        );
     }
 }

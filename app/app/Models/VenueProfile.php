@@ -123,16 +123,11 @@ class VenueProfile extends Model
     }
 
     /**
-     * D17: público + cidade/UF preenchidos.
+     * D17: perfis públicos entram na listagem; cidade/UF são filtros opcionais.
      */
     public function scopeDiscoverable(Builder $query): Builder
     {
-        return $query
-            ->where('is_public', true)
-            ->whereNotNull('city')
-            ->where('city', '!=', '')
-            ->whereNotNull('state')
-            ->where('state', '!=', '');
+        return $query->where('is_public', true);
     }
 
     public function completionPercent(): int

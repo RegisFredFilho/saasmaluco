@@ -5,7 +5,7 @@
 @section('content')
     <div class="mb-6">
         <h1 class="text-2xl md:text-3xl font-semibold tracking-tight">Estabelecimentos</h1>
-        <p class="text-stone-600 mt-1 text-sm">Espaços públicos com cidade e UF. Contatos privados não aparecem na lista.</p>
+        <p class="text-stone-600 mt-1 text-sm">Listagem pública. Filtros são opcionais. Contatos privados não aparecem na lista.</p>
     </div>
 
     <form method="get" action="{{ route('venues.index') }}" class="bg-white border border-stone-200 rounded-lg p-4 mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -45,35 +45,35 @@
         </div>
     </form>
 
-    <p class="text-sm text-stone-500 mb-4">{{ $venues->total() }} resultado(s)</p>
+    <div
+        x-data="discoveryInfinite({ nextUrl: @js($venues->nextPageUrl()) })"
+        class="space-y-4"
+    >
+        <p class="text-sm text-stone-500">{{ $venues->total() }} resultado(s)</p>
 
-    <ul class="space-y-3">
-        @forelse ($venues as $venue)
-            <li>
-                <a href="{{ route('venues.show', $venue) }}" class="block bg-white border border-stone-200 rounded-lg p-4 hover:border-stone-400 transition-colors">
-                    <h2 class="font-medium text-stone-900">{{ $venue->display_name }}</h2>
-                    <p class="text-sm text-stone-600 mt-1">
-                        {{ $venue->city }}/{{ $venue->state }}
-                        @if ($venue->event_type)
-                            · {{ $venue->event_type->label() }}
-                        @endif
-                        @if ($venue->capacity)
-                            · ~{{ $venue->capacity }} pessoas
-                        @endif
-                    </p>
-                    @if ($venue->genres->isNotEmpty())
-                        <p class="text-xs text-stone-500 mt-1 truncate">{{ $venue->genres->pluck('name')->join(', ') }}</p>
-                    @endif
-                </a>
-            </li>
-        @empty
-            <li class="bg-white border border-stone-200 rounded-lg p-6 text-stone-600 text-sm">
-                Nenhum estabelecimento encontrado com esses filtros.
-            </li>
-        @endforelse
-    </ul>
+        <ul x-ref="list" class="space-y-3">
+            @if ($venues->isNotEmpty())
+                @include('discover.partials.venue-items', ['venues' => $venues])
+            @else
+                <li class="bg-white border border-stone-200 rounded-lg p-6 text-stone-600 text-sm">
+                    Nenhum estabelecimento público cadastrado ainda.
+                </li>
+            @endif
+        </ul>
 
-    <div class="mt-6">
-        {{ $venues->links() }}
+        <div class="pt-2 flex flex-col items-center gap-3">
+            <button
+                type="button"
+                x-show="nextUrl"
+                x-cloak
+                @click="loadMore"
+                :disabled="loading"
+                class="px-4 py-2 border border-stone-300 rounded-md text-sm text-stone-800 hover:bg-white disabled:opacity-60"
+                x-text="loading ? 'Carregando…' : 'Carregar mais'"
+            ></button>
+            <noscript>
+                <div class="mt-2">{{ $venues->links() }}</div>
+            </noscript>
+        </div>
     </div>
 @endsection
