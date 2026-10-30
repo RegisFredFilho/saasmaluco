@@ -1,0 +1,15 @@
+---
+description: Convenções de código PHP/Blade/Vite
+globs: app/**/*.{php,js,css,blade.php}
+alwaysApply: false
+---
+
+# Convenções
+
+- PHP no estilo Laravel; formatar com Pint quando possível (`vendor/bin/pint`).
+- Controllers finos; regras de negócio em Actions/Services, não em views.
+- Nomes e estrutura em inglês no código; documentação de produto em português em `docs/`.
+- Blade + Tailwind 4 existentes; não introduzir React/Vue/Livewire sem decisão documentada.
+- Tratamento de erros: exceções de domínio claras; JSON previsível em `api/*`; não vazar stack em produção.
+- Preferir mudanças mínimas e alinhadas ao padrão do arquivo tocado.
+- Assets via Vite (`resources/js`, `resources/css`).

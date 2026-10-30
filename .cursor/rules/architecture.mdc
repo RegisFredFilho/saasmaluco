@@ -1,0 +1,15 @@
+---
+description: Arquitetura e organização do monólito Laravel SindiGig
+alwaysApply: true
+---
+
+# Arquitetura
+
+- Evoluir o skeleton SaaSMaluco em `app/`. Não trocar Laravel, Eloquent, Blade, Vite ou Tailwind sem justificativa técnica documentada.
+- Manter monólito modular. Sem microserviços no MVP.
+- Document root HTTP: `app/public` (nunca a raiz do repo).
+- Separar: rotas → controllers finos → Form Requests → Policies → Services/Actions → Models.
+- Conta (`User`) ≠ perfil profissional (`ArtistProfile` / `VenueProfile`) ≠ admin da plataforma.
+- API futura em `/api/v1/` compartilhando as mesmas regras da web.
+- Consultar `docs/ARCHITECTURE.md` e `docs/BUSINESS_RULES.md` antes de modelar entidades novas.
+- Não criar tabelas para features fora do MVP (pagamentos, ticketing, IA, etc.).
