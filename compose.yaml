@@ -1,9 +1,10 @@
+
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: unless-stopped  
+    restart: unless-stopped
     working_dir: /var/www/html
     volumes:
       - ./app:/var/www/html
@@ -55,6 +56,19 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    networks:
+      - saas
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "127.0.0.1:8081:80"
+    depends_on:
+      - mysql
     networks:
       - saas
 
