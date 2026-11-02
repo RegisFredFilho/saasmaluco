@@ -19,6 +19,8 @@ class MessageResource extends JsonResource
             'body' => $this->body,
             'user_id' => $this->user_id,
             'user_name' => $this->whenLoaded('user', fn () => $this->user?->name),
+            'sender_label' => $this->senderLabel(),
+            'sender_photo_url' => $this->senderPhotoUrl(),
             'created_at' => $this->created_at,
         ];
     }

@@ -2,7 +2,7 @@
     <x-slot name="header">
         <x-page-header
             title="Negociação"
-            :lead="$conversation->opportunity->title.' · '.$conversation->artistProfile->publicName().' · '.$conversation->venueProfile->display_name"
+            :lead="$conversation->opportunity->title"
         >
             <x-slot name="actions">
                 <a href="{{ route('conversations.index') }}" class="sg-btn-ghost">← Negociações</a>
@@ -12,6 +12,15 @@
     </x-slot>
 
     <div class="mx-auto max-w-4xl space-y-6">
+        <section class="sg-panel flex items-center gap-4 p-4 md:p-5">
+            <x-avatar :src="$conversation->artistProfile->photoUrl()" :name="$conversation->artistProfile->publicName()" size="lg" />
+            <div class="min-w-0 flex-1">
+                <p class="truncate font-semibold text-ink">{{ $conversation->artistProfile->publicName() }}</p>
+                <p class="truncate text-sm text-ink-muted">{{ $conversation->venueProfile->display_name }}</p>
+            </div>
+            <x-avatar :src="$conversation->venueProfile->photoUrl()" :name="$conversation->venueProfile->display_name" size="lg" />
+        </section>
+
         @if (session('status'))
             <p class="sg-alert-ok">Atualizado.</p>
         @endif
@@ -92,9 +101,13 @@
             <h3 class="font-semibold text-ink">Mensagens</h3>
             <div class="max-h-[28rem] space-y-3 overflow-y-auto">
                 @forelse ($messages as $message)
-                    <div class="text-sm {{ $message->user_id === auth()->id() ? 'text-right' : '' }}">
-                        <p class="mb-0.5 text-xs text-ink-muted">{{ $message->user->name }} · {{ $message->created_at->format('d/m/Y H:i') }}</p>
-                        <p class="inline-block rounded-xl px-3 py-2 text-left whitespace-pre-line {{ $message->user_id === auth()->id() ? 'bg-accent-soft text-accent-fg' : 'bg-canvas-mist text-ink' }}">{{ $message->body }}</p>
+                    @php($mine = $message->user_id === auth()->id())
+                    <div class="flex items-end gap-2 text-sm {{ $mine ? 'flex-row-reverse' : '' }}">
+                        <x-avatar :src="$message->senderPhotoUrl()" :name="$message->senderLabel()" size="sm" />
+                        <div class="min-w-0 {{ $mine ? 'text-right' : '' }}">
+                            <p class="mb-0.5 text-xs text-ink-muted">{{ $message->senderLabel() }} · {{ $message->created_at->format('d/m/Y H:i') }}</p>
+                            <p class="inline-block rounded-xl px-3 py-2 text-left whitespace-pre-line {{ $mine ? 'bg-accent-soft text-accent-fg' : 'bg-canvas-mist text-ink' }}">{{ $message->body }}</p>
+                        </div>
                     </div>
                 @empty
                     <p class="text-sm text-ink-muted">Nenhuma mensagem ainda.</p>

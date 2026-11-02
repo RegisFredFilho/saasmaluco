@@ -14,6 +14,8 @@ use App\Models\Proposal;
 use App\Models\User;
 use App\Models\VenueProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class NegotiationTest extends TestCase
@@ -157,5 +159,30 @@ class NegotiationTest extends TestCase
             ->get(route('conversations.show', ['conversation' => $conversation, 'messages_page' => 2]))
             ->assertOk()
             ->assertSee('Mensagem 31');
+    }
+
+    public function test_conversation_shows_artist_profile_photo_in_chat(): void
+    {
+        Storage::fake('public');
+        [$venueOwner, $artistOwner, $conversation] = $this->acceptedNegotiation();
+
+        $path = UploadedFile::fake()->image('banda.jpg', 200, 200)->store('artists/photos', 'public');
+        $conversation->artistProfile->update(['photo_path' => $path]);
+        $photoUrl = $conversation->artistProfile->fresh()->photoUrl();
+
+        $this->actingAs($artistOwner)->post(route('conversations.messages.store', $conversation), [
+            'body' => 'Segue o rider.',
+        ])->assertRedirect(route('conversations.show', $conversation));
+
+        $this->actingAs($venueOwner)
+            ->get(route('conversations.index'))
+            ->assertOk()
+            ->assertSee($photoUrl, false);
+
+        $this->actingAs($venueOwner)
+            ->get(route('conversations.show', $conversation))
+            ->assertOk()
+            ->assertSee($photoUrl, false)
+            ->assertSee('Segue o rider.');
     }
 }
