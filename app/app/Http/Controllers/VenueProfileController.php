@@ -114,7 +114,14 @@ class VenueProfileController extends Controller
 
     public function update(UpdateVenueProfileRequest $request, VenueProfile $venueProfile): RedirectResponse
     {
-        $data = $request->safe()->except(['cover', 'genre_ids', 'manager_emails']);
+        $data = $request->safe()->except(['photo', 'cover', 'genre_ids', 'manager_emails']);
+
+        if ($request->hasFile('photo')) {
+            if ($venueProfile->photo_path) {
+                Storage::disk('public')->delete($venueProfile->photo_path);
+            }
+            $data['photo_path'] = $request->file('photo')->store('venues/photos', 'public');
+        }
 
         if ($request->hasFile('cover')) {
             if ($venueProfile->cover_path) {

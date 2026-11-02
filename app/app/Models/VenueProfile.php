@@ -23,6 +23,7 @@ class VenueProfile extends Model
         'display_name',
         'slug',
         'is_public',
+        'photo_path',
         'cover_path',
         'description',
         'address_line',
@@ -122,6 +123,11 @@ class VenueProfile extends Model
         return $avg !== null ? round((float) $avg, 1) : null;
     }
 
+    public function photoUrl(): ?string
+    {
+        return $this->photo_path ? Storage::disk('public')->url($this->photo_path) : null;
+    }
+
     public function coverUrl(): ?string
     {
         return $this->cover_path ? Storage::disk('public')->url($this->cover_path) : null;
@@ -146,7 +152,7 @@ class VenueProfile extends Model
             filled($this->event_type),
             $this->budget_min !== null || $this->budget_max !== null,
             filled($this->contact_email) || filled($this->contact_phone),
-            filled($this->cover_path) || $this->media()->exists(),
+            filled($this->photo_path) || filled($this->cover_path) || $this->media()->exists(),
         ];
 
         $done = count(array_filter($checks));

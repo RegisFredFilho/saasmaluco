@@ -93,6 +93,7 @@ class VenuePublicProfileTest extends TestCase
             'is_public' => '1',
             'genre_ids' => [$genre->id],
             'manager_emails' => ['gestor@venue.test'],
+            'photo' => UploadedFile::fake()->image('perfil-casa.jpg', 400, 400),
             'cover' => UploadedFile::fake()->image('capa.jpg'),
         ]);
 
@@ -102,13 +103,20 @@ class VenuePublicProfileTest extends TestCase
         $this->assertSame('Casa Live Atualizada', $profile->display_name);
         $this->assertSame('São Paulo', $profile->city);
         $this->assertTrue($profile->genres->contains($genre));
+        $this->assertNotNull($profile->photo_path);
         $this->assertNotNull($profile->cover_path);
-        $this->assertStringStartsWith('/storage/', $profile->coverUrl());
+        $this->assertNotSame($profile->photo_path, $profile->cover_path);
+        $this->assertStringStartsWith('/storage/venues/photos/', $profile->photoUrl());
+        $this->assertStringStartsWith('/storage/venues/covers/', $profile->coverUrl());
 
         $this->get(route('venues.show', $profile))
             ->assertOk()
+            ->assertSee($profile->photoUrl(), false)
             ->assertSee($profile->coverUrl(), false);
 
+        $this->get($profile->photoUrl())
+            ->assertOk()
+            ->assertHeader('content-type', 'image/jpeg');
         $this->get($profile->coverUrl())
             ->assertOk()
             ->assertHeader('content-type', 'image/jpeg');

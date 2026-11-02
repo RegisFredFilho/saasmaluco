@@ -108,7 +108,7 @@
                         @continue(! $follow->followable)
                         <li>
                             <a href="{{ route('venues.show', $follow->followable) }}" class="flex items-center gap-2 text-ink-soft hover:text-accent-fg">
-                                <x-avatar :src="$follow->followable->coverUrl()" :name="$follow->followable->display_name" size="sm" />
+                                <x-avatar :src="$follow->followable->photoUrl()" :name="$follow->followable->display_name" size="sm" />
                                 <span class="truncate">{{ $follow->followable->display_name }}</span>
                             </a>
                         </li>

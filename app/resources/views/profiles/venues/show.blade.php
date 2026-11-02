@@ -35,24 +35,29 @@
             <div class="absolute inset-0 bg-gradient-to-t from-canvas via-canvas/45 to-transparent"></div>
             <div class="pointer-events-none absolute inset-0 bg-stage-radial opacity-40"></div>
             <div class="absolute bottom-0 left-0 right-0 mx-auto max-w-content px-4 pb-8 md:px-6">
-                <h1 class="font-display text-3xl font-semibold tracking-tight md:text-4xl">{{ $profile->display_name }}</h1>
-                <p class="mt-1 text-ink-soft">
-                    @if ($profile->event_type) {{ $profile->event_type->label() }} · @endif
-                    @if ($profile->neighborhood) {{ $profile->neighborhood }}, @endif
-                    @if ($profile->city) {{ $profile->city }}@if($profile->state)/{{ $profile->state }}@endif @endif
-                </p>
-                <div class="mt-3">
-                    <x-network-actions
-                        :follow-route="route('venues.follow', $profile)"
-                        :unfollow-route="route('venues.unfollow', $profile)"
-                        :favorite-route="route('venues.favorite', $profile)"
-                        :unfavorite-route="route('venues.unfavorite', $profile)"
-                        :is-following="$isFollowing"
-                        :is-favorited="$isFavorited"
-                        :is-own="$isOwn"
-                        :followers-count="$profile->follows_count"
-                        :favorites-count="$profile->favorites_count"
-                    />
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-end">
+                    <x-avatar :src="$profile->photoUrl()" :name="$profile->display_name" size="2xl" class="ring-4 ring-canvas shadow-glow" />
+                    <div class="pb-1">
+                        <h1 class="font-display text-3xl font-semibold tracking-tight md:text-4xl">{{ $profile->display_name }}</h1>
+                        <p class="mt-1 text-ink-soft">
+                            @if ($profile->event_type) {{ $profile->event_type->label() }} · @endif
+                            @if ($profile->neighborhood) {{ $profile->neighborhood }}, @endif
+                            @if ($profile->city) {{ $profile->city }}@if($profile->state)/{{ $profile->state }}@endif @endif
+                        </p>
+                        <div class="mt-3">
+                            <x-network-actions
+                                :follow-route="route('venues.follow', $profile)"
+                                :unfollow-route="route('venues.unfollow', $profile)"
+                                :favorite-route="route('venues.favorite', $profile)"
+                                :unfavorite-route="route('venues.unfavorite', $profile)"
+                                :is-following="$isFollowing"
+                                :is-favorited="$isFavorited"
+                                :is-own="$isOwn"
+                                :followers-count="$profile->follows_count"
+                                :favorites-count="$profile->favorites_count"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

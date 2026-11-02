@@ -5,7 +5,6 @@ namespace App\Http\Resources;
 use App\Models\VenueProfile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 /** @mixin VenueProfile */
 class VenueResource extends JsonResource
@@ -23,7 +22,8 @@ class VenueResource extends JsonResource
             'state' => $this->state,
             'description' => $this->description,
             'is_public' => $this->is_public,
-            'cover_url' => $this->cover_path ? Storage::disk('public')->url($this->cover_path) : null,
+            'photo_url' => $this->photoUrl(),
+            'cover_url' => $this->coverUrl(),
             'genres' => $this->whenLoaded('genres', fn () => $this->genres->map(fn ($g) => [
                 'id' => $g->id,
                 'name' => $g->name,

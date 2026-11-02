@@ -147,15 +147,7 @@ class ArtistProfile extends Model
 
     public function photoUrl(): ?string
     {
-        if ($this->photo_path) {
-            return Storage::disk('public')->url($this->photo_path);
-        }
-
-        $ownerPath = $this->relationLoaded('owner')
-            ? $this->owner?->avatar_path
-            : $this->owner()->value('avatar_path');
-
-        return $ownerPath ? Storage::disk('public')->url($ownerPath) : null;
+        return $this->photo_path ? Storage::disk('public')->url($this->photo_path) : null;
     }
 
     public function coverUrl(): ?string

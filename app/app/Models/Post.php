@@ -85,7 +85,7 @@ class Post extends Model
         }
 
         if ($publisher instanceof VenueProfile) {
-            return $publisher->coverUrl();
+            return $publisher->photoUrl();
         }
 
         if ($publisher instanceof User) {
