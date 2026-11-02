@@ -46,11 +46,11 @@ class UpdateArtistProfileRequest extends FormRequest
             'availability_notes' => ['nullable', 'string', 'max:5000'],
             'genre_ids' => ['nullable', 'array'],
             'genre_ids.*' => ['integer', 'exists:genres,id'],
-            'photo' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
-            'cover' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
+            'photo' => ['nullable', 'file', 'mimes:jpeg,jpg,png,webp', 'mimetypes:image/jpeg,image/jpg,image/pjpeg,image/png,image/webp', 'max:5120'],
+            'cover' => ['nullable', 'file', 'mimes:jpeg,jpg,png,webp', 'mimetypes:image/jpeg,image/jpg,image/pjpeg,image/png,image/webp', 'max:5120'],
             'links' => ['nullable', 'array', 'max:15'],
-            'links.*.label' => ['required_with:links.*.url', 'string', 'max:120'],
-            'links.*.url' => ['required_with:links.*.label', 'url', 'max:2048'],
+            'links.*.label' => ['nullable', 'required_with:links.*.url', 'string', 'max:120'],
+            'links.*.url' => ['nullable', 'required_with:links.*.label', 'url', 'max:2048'],
         ];
     }
 
@@ -58,7 +58,52 @@ class UpdateArtistProfileRequest extends FormRequest
     {
         return [
             'fee_max.gte' => 'O cachê máximo deve ser maior ou igual ao mínimo.',
+            'links.*.label.required_with' => 'Informe o rótulo do link.',
+            'links.*.label.string' => 'Informe o rótulo do link.',
+            'links.*.url.required_with' => 'Informe a URL do link.',
             'links.*.url.url' => 'Informe uma URL válida (incluindo https://).',
+            'photo.image' => 'A foto de perfil precisa ser JPG, JPEG, PNG ou WebP.',
+            'photo.mimes' => 'A foto de perfil precisa ser JPG, JPEG, PNG ou WebP.',
+            'photo.mimetypes' => 'A foto de perfil precisa ser JPG, JPEG, PNG ou WebP.',
+            'photo.max' => 'A foto de perfil deve ter no máximo 5 MB.',
+            'cover.image' => 'A capa precisa ser JPG, JPEG, PNG ou WebP.',
+            'cover.mimes' => 'A capa precisa ser JPG, JPEG, PNG ou WebP.',
+            'cover.mimetypes' => 'A capa precisa ser JPG, JPEG, PNG ou WebP.',
+            'cover.max' => 'A capa deve ter no máximo 5 MB.',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $links = collect($this->input('links', []))
+            ->map(function ($link): array {
+                $label = trim((string) ($link['label'] ?? ''));
+                $url = trim((string) ($link['url'] ?? ''));
+                if (in_array($url, ['http://', 'https://'], true)) {
+                    $url = '';
+                }
+
+                return ['label' => $label, 'url' => $url];
+            })
+            ->filter(fn (array $link): bool => $link['label'] !== '' || $link['url'] !== '')
+            ->values()
+            ->all();
+
+        $this->merge(['links' => $links]);
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator): void {
+            foreach (['photo', 'cover'] as $field) {
+                $file = $this->file($field);
+                if ($file && ! $file->isValid()) {
+                    $validator->errors()->add(
+                        $field,
+                        'Não foi possível enviar a imagem. Use JPEG, PNG ou WebP de até 5 MB.',
+                    );
+                }
+            }
+        });
     }
 }

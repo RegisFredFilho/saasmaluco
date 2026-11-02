@@ -125,24 +125,13 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <x-input-label for="photo" value="Foto de perfil do espaço" />
-                            @if ($profile->photoUrl())
-                                <img src="{{ $profile->photoUrl() }}" alt="" class="h-16 w-16 rounded-full object-cover mb-2">
-                            @endif
-                            <input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-sm">
-                            <p class="text-xs text-ink-muted mt-1">JPEG/PNG/WebP · máx. 5 MB. Independente da foto do artista.</p>
-                            <x-input-error :messages="$errors->get('photo')" class="mt-2" />
-                        </div>
-                        <div>
-                            <x-input-label for="cover" value="Imagem de capa" />
-                            @if ($profile->coverUrl())
-                                <img src="{{ $profile->coverUrl() }}" alt="" class="h-16 w-full max-w-xs object-cover mb-2 rounded">
-                            @endif
-                            <input id="cover" name="cover" type="file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-sm">
-                            <p class="text-xs text-ink-muted mt-1">JPEG/PNG/WebP · máx. 5 MB</p>
-                            <x-input-error :messages="$errors->get('cover')" class="mt-2" />
-                        </div>
+                        <x-image-upload
+                            name="photo"
+                            label="Foto de perfil do espaço"
+                            :src="$profile->photoUrl()"
+                            hint="JPEG, PNG ou WebP — máx. 5 MB. Independente da foto do artista."
+                        />
+                        <x-image-upload name="cover" label="Imagem de capa" variant="cover" :src="$profile->coverUrl()" />
                     </div>
 
                     <div>

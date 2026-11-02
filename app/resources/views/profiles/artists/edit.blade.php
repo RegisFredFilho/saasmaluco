@@ -12,6 +12,13 @@
             @if (session('status'))
                 <p class="sg-alert-ok">Alterações registradas.</p>
             @endif
+            @if ($errors->any())
+                <div class="sg-alert-err space-y-1">
+                    @foreach ($errors->all() as $message)
+                        <p>{{ $message }}</p>
+                    @endforeach
+                </div>
+            @endif
 
             <div class="sg-panel p-6">
                 <h3 class="font-medium text-ink mb-4">Dados principais</h3>
@@ -29,6 +36,11 @@
                             <x-input-label for="stage_name" value="Nome artístico (opcional)" />
                             <x-text-input id="stage_name" name="stage_name" class="mt-1 block w-full" :value="old('stage_name', $profile->stage_name)" />
                         </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-image-upload name="photo" label="Foto de perfil" :src="$profile->photoUrl()" />
+                        <x-image-upload name="cover" label="Imagem de capa" variant="cover" :src="$profile->coverUrl()" />
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -125,27 +137,6 @@
                         <textarea id="availability_notes" name="availability_notes" rows="2" class="sg-input mt-1">{{ old('availability_notes', $profile->availability_notes) }}</textarea>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <x-input-label for="photo" value="Foto de perfil" />
-                            @if ($profile->photoUrl())
-                                <img src="{{ $profile->photoUrl() }}" alt="" class="h-16 w-16 rounded-full object-cover mb-2">
-                            @endif
-                            <input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-sm">
-                            <p class="text-xs text-ink-muted mt-1">JPEG/PNG/WebP · máx. 5 MB</p>
-                            <x-input-error :messages="$errors->get('photo')" class="mt-2" />
-                        </div>
-                        <div>
-                            <x-input-label for="cover" value="Imagem de capa" />
-                            @if ($profile->coverUrl())
-                                <img src="{{ $profile->coverUrl() }}" alt="" class="h-16 w-full max-w-xs object-cover mb-2 rounded">
-                            @endif
-                            <input id="cover" name="cover" type="file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-sm">
-                            <p class="text-xs text-ink-muted mt-1">JPEG/PNG/WebP · máx. 5 MB</p>
-                            <x-input-error :messages="$errors->get('cover')" class="mt-2" />
-                        </div>
-                    </div>
-
                     <div>
                         <x-input-label value="Links externos" />
                         <p class="text-xs text-ink-muted mb-2">Até 15 links (Spotify, Instagram, site, etc.)</p>
@@ -201,7 +192,7 @@
                         </div>
                         <div>
                             <x-input-label for="media_photo" value="Arquivo (foto)" />
-                            <input id="media_photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-sm">
+                            <input id="media_photo" name="photo" type="file" accept=".jpg,.jpeg,.JPG,.JPEG,.png,.webp,image/jpeg,image/jpg,image/pjpeg,image/png,image/webp" class="mt-1 block w-full text-sm">
                         </div>
                         <div>
                             <x-input-label for="external_url" value="URL do vídeo" />

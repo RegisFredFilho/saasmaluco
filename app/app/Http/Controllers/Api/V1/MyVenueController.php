@@ -58,14 +58,14 @@ class MyVenueController extends Controller
     {
         $data = $request->safe()->except(['photo', 'cover', 'genre_ids', 'manager_emails']);
 
-        if ($request->hasFile('photo')) {
+        if ($request->file('photo')?->isValid()) {
             if ($venueProfile->photo_path) {
                 Storage::disk('public')->delete($venueProfile->photo_path);
             }
             $data['photo_path'] = $request->file('photo')->store('venues/photos', 'public');
         }
 
-        if ($request->hasFile('cover')) {
+        if ($request->file('cover')?->isValid()) {
             if ($venueProfile->cover_path) {
                 Storage::disk('public')->delete($venueProfile->cover_path);
             }

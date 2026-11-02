@@ -60,14 +60,14 @@ class MyArtistController extends Controller
     {
         $data = $request->safe()->except(['photo', 'cover', 'genre_ids', 'links']);
 
-        if ($request->hasFile('photo')) {
+        if ($request->file('photo')?->isValid()) {
             if ($artistProfile->photo_path) {
                 Storage::disk('public')->delete($artistProfile->photo_path);
             }
             $data['photo_path'] = $request->file('photo')->store('artists/photos', 'public');
         }
 
-        if ($request->hasFile('cover')) {
+        if ($request->file('cover')?->isValid()) {
             if ($artistProfile->cover_path) {
                 Storage::disk('public')->delete($artistProfile->cover_path);
             }

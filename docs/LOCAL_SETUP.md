@@ -123,7 +123,7 @@ Não aponte o DocumentRoot do Apache para este projeto enquanto o fluxo Docker e
 3. **Porta 8080 em uso** — altere `APP_PORT` no `.env` da raiz.
 4. **500 após subir** — rode `key:generate` e `migrate`; confira `app/.env` (`DB_HOST=mysql`).
 5. **Assets sem estilo** — execute `npm run build` (host ou profile `frontend`).
-6. **`touch(): Utime failed` / HTTP 500 em Blade** — o bind mount impede `utime` em `storage/framework/views`. O Compose usa `VIEW_COMPILED_PATH=/tmp/laravel-views` em **tmpfs** (nunca volume nomeado). Recrie: `docker compose up -d --force-recreate app`. Em homolog, se o volume antigo existir: `docker compose stop app && docker volume rm homolog_laravel_views && docker compose up -d app`.
+6. **`touch(): Utime failed` / HTTP 500 em Blade** — o bind mount impede `utime` em `storage/framework/views`. O Compose usa `VIEW_COMPILED_PATH=/var/cache/laravel-views` no filesystem do container (sem bind, sem tmpfs, sem volume nomeado). Recrie: `docker compose up -d --build --force-recreate app`. Em homolog, se o volume antigo existir: `docker compose stop app && docker volume rm homolog_laravel_views && docker compose up -d app`.
 7. **Fotos de perfil/capa quebradas** — o upload vai para `storage/app/public`. Sem o symlink `public/storage` o nginx antigo devolvia 404. Recrie o nginx após puxar a config (`docker compose up -d --force-recreate nginx`) e confira `http://localhost:8080/storage/...`.
 
 ## CI

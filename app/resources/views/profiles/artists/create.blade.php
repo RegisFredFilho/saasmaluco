@@ -8,13 +8,14 @@
 
     <div class="mx-auto max-w-xl">
         <div class="sg-panel p-5 md:p-6">
-            <form method="post" action="{{ route('artist-profiles.store') }}" class="space-y-6">
+            <form method="post" action="{{ route('artist-profiles.store') }}" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 <div>
                     <x-input-label for="display_name" value="Nome artístico / nome da banda" />
                     <x-text-input id="display_name" name="display_name" class="mt-1 block w-full" :value="old('display_name')" required />
                     <x-input-error :messages="$errors->get('display_name')" class="mt-2" />
                 </div>
+                <x-image-upload name="photo" label="Foto de perfil" :src="null" />
                 <div>
                     <x-input-label for="kind" value="Tipo" />
                     <select id="kind" name="kind" class="sg-input mt-1" required>
