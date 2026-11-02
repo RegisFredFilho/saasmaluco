@@ -75,4 +75,23 @@ class Post extends Model
 
         return null;
     }
+
+    public function publisherPhotoUrl(): ?string
+    {
+        $publisher = $this->publisher;
+
+        if ($publisher instanceof ArtistProfile) {
+            return $publisher->photoUrl();
+        }
+
+        if ($publisher instanceof VenueProfile) {
+            return $publisher->coverUrl();
+        }
+
+        if ($publisher instanceof User) {
+            return $publisher->avatarUrl();
+        }
+
+        return $this->author?->avatarUrl();
+    }
 }

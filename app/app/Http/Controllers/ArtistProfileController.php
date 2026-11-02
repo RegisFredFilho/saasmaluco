@@ -74,6 +74,7 @@ class ArtistProfileController extends Controller
         $this->authorize('view', $artistProfile);
 
         $artistProfile->load([
+            'owner:id,avatar_path',
             'genres',
             'media',
             'links',

@@ -42,9 +42,11 @@ class ArtistDiscoveryController extends Controller
                 'state',
                 'region',
                 'photo_path',
+                'cover_path',
+                'owner_user_id',
                 'is_public',
             ])
-            ->with('genres:id,name,slug')
+            ->with(['genres:id,name,slug', 'owner:id,avatar_path'])
             ->when($filters['q'] ?? null, function ($query, $q) {
                 $term = '%'.$q.'%';
                 $query->where(function ($inner) use ($term) {

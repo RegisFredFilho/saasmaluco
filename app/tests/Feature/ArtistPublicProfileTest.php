@@ -104,6 +104,19 @@ class ArtistPublicProfileTest extends TestCase
         $this->assertNotNull($profile->photo_path);
         $this->assertSame(1, $profile->links()->count());
         Storage::disk('public')->assertExists($profile->photo_path);
+        $this->assertStringStartsWith('/storage/', $profile->photoUrl());
+
+        $this->get(route('artists.show', $profile))
+            ->assertOk()
+            ->assertSee($profile->photoUrl(), false);
+
+        $this->get($profile->photoUrl())
+            ->assertOk()
+            ->assertHeader('content-type', 'image/jpeg');
+
+        $this->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee($profile->photoUrl(), false);
     }
 
     public function test_stranger_cannot_update_artist_profile(): void

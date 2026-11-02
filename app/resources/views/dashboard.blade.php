@@ -145,7 +145,10 @@
                     <ul class="space-y-2 text-sm">
                         @forelse ($artistProfiles as $profile)
                             <li>
-                                <a href="{{ route('artist-profiles.edit', $profile) }}" class="text-ink-soft hover:text-accent-fg">{{ $profile->display_name }}</a>
+                                <a href="{{ route('artist-profiles.edit', $profile) }}" class="flex items-center gap-2 text-ink-soft hover:text-accent-fg">
+                                    <x-avatar :src="$profile->photoUrl()" :name="$profile->publicName()" size="sm" />
+                                    <span class="truncate">{{ $profile->display_name }}</span>
+                                </a>
                             </li>
                         @empty
                             <li class="text-ink-muted">Nenhum artista ainda.</li>
@@ -159,7 +162,10 @@
                         <ul class="space-y-2 text-sm">
                             @forelse ($venueProfiles as $profile)
                                 <li>
-                                    <a href="{{ route('venue-profiles.edit', $profile) }}" class="text-ink-soft hover:text-accent-fg">{{ $profile->display_name }}</a>
+                                    <a href="{{ route('venue-profiles.edit', $profile) }}" class="flex items-center gap-2 text-ink-soft hover:text-accent-fg">
+                                        <x-avatar :src="$profile->coverUrl()" :name="$profile->display_name" size="sm" />
+                                        <span class="truncate">{{ $profile->display_name }}</span>
+                                    </a>
                                 </li>
                             @empty
                                 <li class="text-ink-muted">Nenhum espaço ainda.</li>

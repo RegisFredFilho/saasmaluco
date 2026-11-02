@@ -72,7 +72,7 @@ Atalho PowerShell (após Docker pronto):
 | MySQL | host Docker `mysql:3306` (rede interna) |
 | Redis | host Docker `redis:6379` |
 | PHP-FPM | serviço `app` |
-| Avatares | `storage/app/public` via `php artisan storage:link` |
+| Avatares e fotos de perfil | Arquivos em `storage/app/public`. URLs relativas `/storage/...`. Nginx aponta `/storage/` para essa pasta; a rota Laravel cobre o caso sem symlink. `php artisan storage:link` é opcional. |
 
 Recuperação de senha, verificação de e-mail e **alertas opcionais do SindiGig** usam `MAIL_MAILER=log` (conteúdo em `app/storage/logs`). Opt-out: Minha conta → notificações por e-mail.
 
@@ -124,6 +124,7 @@ Não aponte o DocumentRoot do Apache para este projeto enquanto o fluxo Docker e
 4. **500 após subir** — rode `key:generate` e `migrate`; confira `app/.env` (`DB_HOST=mysql`).
 5. **Assets sem estilo** — execute `npm run build` (host ou profile `frontend`).
 6. **`touch(): Utime failed` / HTTP 500 em Blade** — o bind mount impede `utime` em `storage/framework/views`. O Compose usa `VIEW_COMPILED_PATH=/tmp/laravel-views` em **tmpfs** (nunca volume nomeado). Recrie: `docker compose up -d --force-recreate app`. Em homolog, se o volume antigo existir: `docker compose stop app && docker volume rm homolog_laravel_views && docker compose up -d app`.
+7. **Fotos de perfil/capa quebradas** — o upload vai para `storage/app/public`. Sem o symlink `public/storage` o nginx antigo devolvia 404. Recrie o nginx após puxar a config (`docker compose up -d --force-recreate nginx`) e confira `http://localhost:8080/storage/...`.
 
 ## CI
 

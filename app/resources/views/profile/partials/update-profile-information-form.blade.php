@@ -18,13 +18,7 @@
         @method('patch')
 
         <div class="flex items-center gap-4">
-            @if ($user->avatarUrl())
-                <img src="{{ $user->avatarUrl() }}" alt="Foto de perfil" class="h-16 w-16 rounded-full object-cover">
-            @else
-                <div class="flex h-16 w-16 items-center justify-center rounded-full bg-canvas text-sm text-ink-muted">
-                    Sem foto
-                </div>
-            @endif
+            <x-avatar :src="$user->avatarUrl()" :name="$user->name" size="xl" />
             <div class="flex-1">
                 <x-input-label for="avatar" value="Foto de perfil" />
                 <input id="avatar" name="avatar" type="file" accept="image/jpeg,image/png,image/webp"

@@ -16,9 +16,7 @@
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <section class="space-y-4 lg:col-span-2">
             <a href="{{ route('posts.create') }}" class="sg-panel flex items-center gap-3 p-4 transition hover:border-accent/40">
-                <span class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-accent to-vibe text-sm font-semibold text-white">
-                    {{ strtoupper(mb_substr(Auth::user()->name, 0, 1)) }}
-                </span>
+                <x-avatar :src="Auth::user()->avatarUrl()" :name="Auth::user()->name" size="md" />
                 <span class="flex-1 rounded-xl border border-canvas-line bg-canvas-mist px-4 py-2.5 text-sm text-ink-muted">
                     Compartilhe um ensaio, show ou novidade…
                 </span>
@@ -51,9 +49,7 @@
                         <li class="sg-panel p-4 md:p-5">
                             <span class="sg-badge-neutral mb-3">Publicação</span>
                             <div class="flex items-center gap-3">
-                                <span class="flex h-10 w-10 items-center justify-center rounded-full bg-accent-soft text-sm font-semibold text-accent-fg">
-                                    {{ strtoupper(mb_substr($post->publisherLabel(), 0, 1)) }}
-                                </span>
+                                <x-avatar :src="$post->publisherPhotoUrl()" :name="$post->publisherLabel()" size="md" />
                                 <div>
                                     @if ($post->publisherUrl())
                                         <a href="{{ $post->publisherUrl() }}" class="text-sm font-semibold text-ink hover:text-accent-fg">
@@ -95,8 +91,9 @@
                     @forelse ($followedArtists as $follow)
                         @continue(! $follow->followable)
                         <li>
-                            <a href="{{ route('artists.show', $follow->followable) }}" class="text-ink-soft hover:text-accent-fg">
-                                {{ $follow->followable->publicName() }}
+                            <a href="{{ route('artists.show', $follow->followable) }}" class="flex items-center gap-2 text-ink-soft hover:text-accent-fg">
+                                <x-avatar :src="$follow->followable->photoUrl()" :name="$follow->followable->publicName()" size="sm" />
+                                <span class="truncate">{{ $follow->followable->publicName() }}</span>
                             </a>
                         </li>
                     @empty
@@ -110,8 +107,9 @@
                     @forelse ($followedVenues as $follow)
                         @continue(! $follow->followable)
                         <li>
-                            <a href="{{ route('venues.show', $follow->followable) }}" class="text-ink-soft hover:text-accent-fg">
-                                {{ $follow->followable->display_name }}
+                            <a href="{{ route('venues.show', $follow->followable) }}" class="flex items-center gap-2 text-ink-soft hover:text-accent-fg">
+                                <x-avatar :src="$follow->followable->coverUrl()" :name="$follow->followable->display_name" size="sm" />
+                                <span class="truncate">{{ $follow->followable->display_name }}</span>
                             </a>
                         </li>
                     @empty

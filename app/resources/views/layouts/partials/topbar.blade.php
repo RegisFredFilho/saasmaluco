@@ -35,9 +35,7 @@
             @endif
         </a>
         <a href="{{ route('profile.edit') }}" class="sg-btn-ghost hidden sm:inline-flex" title="Conta">
-            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-accent to-vibe text-xs font-semibold text-white">
-                {{ strtoupper(mb_substr(Auth::user()->name, 0, 1)) }}
-            </span>
+            <x-avatar :src="Auth::user()->avatarUrl()" :name="Auth::user()->name" size="sm" />
         </a>
     </div>
 </header>
