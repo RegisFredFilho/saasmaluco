@@ -37,6 +37,7 @@ class VenueDiscoveryController extends Controller
                 'state',
                 'event_type',
                 'capacity',
+                'photo_path',
                 'cover_path',
                 'is_public',
             ])

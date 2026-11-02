@@ -46,6 +46,7 @@ class UpdateVenueProfileRequest extends FormRequest
             'contact_phone' => ['nullable', 'string', 'max:40'],
             'genre_ids' => ['nullable', 'array'],
             'genre_ids.*' => ['integer', 'exists:genres,id'],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
             'cover' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
             'manager_emails' => ['nullable', 'array', 'max:10'],
             'manager_emails.*' => ['nullable', 'email', 'max:255'],

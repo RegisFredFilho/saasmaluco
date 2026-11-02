@@ -10,7 +10,10 @@
                 <x-media-fallback variant="venue" class="aspect-[21/9]" />
             @endif
             <div class="p-4">
-                <h2 class="font-semibold text-ink">{{ $venue->display_name }}</h2>
+                <div class="flex items-start justify-between gap-3">
+                    <h2 class="min-w-0 truncate font-semibold text-ink">{{ $venue->display_name }}</h2>
+                    <x-avatar :src="$venue->photoUrl()" :name="$venue->display_name" size="md" class="hidden ring-2 ring-canvas-line sm:flex" />
+                </div>
                 <p class="mt-1 text-sm text-ink-muted">
                     @if ($venue->city || $venue->state)
                         {{ collect([$venue->city, $venue->state])->filter()->join('/') }}

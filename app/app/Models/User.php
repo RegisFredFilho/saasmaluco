@@ -88,14 +88,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function avatarUrl(): ?string
     {
-        if ($this->avatar_path) {
-            return Storage::disk('public')->url($this->avatar_path);
-        }
-
-        $artistPath = $this->relationLoaded('ownedArtistProfiles')
-            ? $this->ownedArtistProfiles->first(fn (ArtistProfile $profile) => filled($profile->photo_path))?->photo_path
-            : $this->ownedArtistProfiles()->whereNotNull('photo_path')->value('photo_path');
-
-        return $artistPath ? Storage::disk('public')->url($artistPath) : null;
+        return $this->avatar_path
+            ? Storage::disk('public')->url($this->avatar_path)
+            : null;
     }
 }

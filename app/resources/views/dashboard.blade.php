@@ -163,7 +163,7 @@
                             @forelse ($venueProfiles as $profile)
                                 <li>
                                     <a href="{{ route('venue-profiles.edit', $profile) }}" class="flex items-center gap-2 text-ink-soft hover:text-accent-fg">
-                                        <x-avatar :src="$profile->coverUrl()" :name="$profile->display_name" size="sm" />
+                                        <x-avatar :src="$profile->photoUrl()" :name="$profile->display_name" size="sm" />
                                         <span class="truncate">{{ $profile->display_name }}</span>
                                     </a>
                                 </li>
