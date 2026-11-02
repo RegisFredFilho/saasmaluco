@@ -50,12 +50,21 @@ class ConversationController extends Controller
     {
         $this->authorize('view', $conversation);
 
-        $conversation->load(['opportunity', 'venueProfile', 'artistProfile', 'application']);
+        $conversation->load([
+            'opportunity',
+            'venueProfile.managers',
+            'artistProfile.members',
+            'application',
+        ]);
 
         $messages = $conversation->messages()
             ->with('user')
             ->orderBy('created_at')
             ->paginate(30, ['*'], 'messages_page');
+
+        $messages->getCollection()->each(
+            fn ($message) => $message->setRelation('conversation', $conversation),
+        );
 
         $proposals = $conversation->proposals()
             ->with(['createdBy', 'booking'])
