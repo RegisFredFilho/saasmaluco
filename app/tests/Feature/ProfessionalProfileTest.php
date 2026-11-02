@@ -8,6 +8,8 @@ use App\Models\ArtistProfile;
 use App\Models\User;
 use App\Models\VenueProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ProfessionalProfileTest extends TestCase
@@ -32,6 +34,24 @@ class ProfessionalProfileTest extends TestCase
         $this->assertTrue(
             $profile->members()->where('user_id', $user->id)->where('role', ArtistMemberRole::Owner->value)->exists()
         );
+    }
+
+    public function test_user_can_create_artist_profile_with_photo(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->post(route('artist-profiles.store'), [
+            'display_name' => 'Banda Com Foto',
+            'kind' => ArtistKind::Band->value,
+            'is_public' => '1',
+            'photo' => UploadedFile::fake()->image('banda.jpg', 400, 400),
+        ])->assertRedirect();
+
+        $profile = ArtistProfile::query()->first();
+        $this->assertNotNull($profile?->photo_path);
+        Storage::disk('public')->assertExists($profile->photo_path);
+        $this->assertStringStartsWith('/storage/', $profile->photoUrl());
     }
 
     public function test_user_cannot_edit_another_users_artist_profile(): void

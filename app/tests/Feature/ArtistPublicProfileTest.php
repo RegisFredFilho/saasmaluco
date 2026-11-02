@@ -89,7 +89,7 @@ class ArtistPublicProfileTest extends TestCase
             'fee_min' => '800.00',
             'fee_max' => '1500.00',
             'genre_ids' => [$genre->id],
-            'photo' => UploadedFile::fake()->image('avatar.jpg', 400, 400),
+            'photo' => UploadedFile::fake()->image('avatar.JPG', 400, 400),
             'links' => [
                 ['label' => 'Site', 'url' => 'https://example.com'],
             ],
@@ -117,6 +117,27 @@ class ArtistPublicProfileTest extends TestCase
         $this->get(route('dashboard'))
             ->assertOk()
             ->assertSee($profile->photoUrl(), false);
+    }
+
+    public function test_artist_edit_form_includes_intact_photo_file_input(): void
+    {
+        $owner = User::factory()->create();
+        $profile = ArtistProfile::create([
+            'owner_user_id' => $owner->id,
+            'display_name' => 'DJ Teste',
+            'kind' => ArtistKind::Dj,
+            'is_public' => true,
+        ]);
+
+        $html = $this->actingAs($owner)
+            ->get(route('artist-profiles.edit', $profile))
+            ->assertOk()
+            ->getContent();
+
+        $this->assertStringContainsString('name="photo"', $html);
+        $this->assertStringContainsString('type="file"', $html);
+        $this->assertStringContainsString('data-preview-id="photo-preview"', $html);
+        $this->assertStringNotContainsString('getElementById("photo-preview")', $html);
     }
 
     public function test_stranger_cannot_update_artist_profile(): void
@@ -185,6 +206,39 @@ class ArtistPublicProfileTest extends TestCase
             'caption' => 'Clipe',
         ])->assertSessionHasNoErrors();
 
+        $this->assertSame(1, $profile->media()->count());
+    }
+
+    public function test_empty_link_rows_are_ignored_and_portfolio_photo_is_not_profile_photo(): void
+    {
+        Storage::fake('public');
+        $owner = User::factory()->create();
+        $profile = ArtistProfile::create([
+            'owner_user_id' => $owner->id,
+            'display_name' => 'Banda Foto',
+            'kind' => ArtistKind::Band,
+            'is_public' => true,
+        ]);
+
+        $this->actingAs($owner)->put(route('artist-profiles.update', $profile), [
+            'display_name' => 'Banda Foto',
+            'kind' => ArtistKind::Band->value,
+            'is_public' => '1',
+            'links' => [
+                ['label' => 'YouTube', 'url' => 'https://www.youtube.com/'],
+                ['label' => null, 'url' => null],
+                ['label' => '', 'url' => 'https://'],
+            ],
+        ])->assertRedirect(route('artist-profiles.edit', $profile));
+
+        $this->actingAs($owner)->post(route('artist-profiles.media.store', $profile), [
+            'type' => ArtistMediaType::Photo->value,
+            'photo' => UploadedFile::fake()->image('palco.JPG', 400, 400),
+        ])->assertRedirect();
+
+        $profile->refresh();
+        $this->assertNull($profile->photo_path);
+        $this->assertSame(1, $profile->links()->count());
         $this->assertSame(1, $profile->media()->count());
     }
 }

@@ -55,6 +55,7 @@ class ArtistProfileController extends Controller
             'display_name' => ['required', 'string', 'max:255'],
             'kind' => ['required', Rule::enum(ArtistKind::class)],
             'is_public' => ['sometimes', 'boolean'],
+            'photo' => ['nullable', 'file', 'mimes:jpeg,jpg,png,webp', 'mimetypes:image/jpeg,image/jpg,image/pjpeg,image/png,image/webp', 'max:5120'],
         ]);
 
         $profile = ArtistProfile::create([
@@ -62,6 +63,9 @@ class ArtistProfileController extends Controller
             'display_name' => $data['display_name'],
             'kind' => $data['kind'],
             'is_public' => $request->boolean('is_public', true),
+            'photo_path' => $request->file('photo')?->isValid()
+                ? $request->file('photo')->store('artists/photos', 'public')
+                : null,
         ]);
 
         return redirect()
@@ -133,14 +137,14 @@ class ArtistProfileController extends Controller
     {
         $data = $request->safe()->except(['photo', 'cover', 'genre_ids', 'links']);
 
-        if ($request->hasFile('photo')) {
+        if ($request->file('photo')?->isValid()) {
             if ($artistProfile->photo_path) {
                 Storage::disk('public')->delete($artistProfile->photo_path);
             }
             $data['photo_path'] = $request->file('photo')->store('artists/photos', 'public');
         }
 
-        if ($request->hasFile('cover')) {
+        if ($request->file('cover')?->isValid()) {
             if ($artistProfile->cover_path) {
                 Storage::disk('public')->delete($artistProfile->cover_path);
             }
@@ -165,7 +169,7 @@ class ArtistProfileController extends Controller
 
         $data = $request->validate([
             'type' => ['required', Rule::enum(ArtistMediaType::class)],
-            'photo' => ['required_if:type,photo', 'nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:8192'],
+            'photo' => ['required_if:type,photo', 'nullable', 'file', 'mimes:jpeg,jpg,png,webp', 'mimetypes:image/jpeg,image/jpg,image/pjpeg,image/png,image/webp', 'max:8192'],
             'external_url' => [
                 'required_if:type,video_link',
                 'nullable',

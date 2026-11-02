@@ -46,10 +46,25 @@ class UpdateVenueProfileRequest extends FormRequest
             'contact_phone' => ['nullable', 'string', 'max:40'],
             'genre_ids' => ['nullable', 'array'],
             'genre_ids.*' => ['integer', 'exists:genres,id'],
-            'photo' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
-            'cover' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
+            'photo' => ['nullable', 'file', 'mimes:jpeg,jpg,png,webp', 'mimetypes:image/jpeg,image/jpg,image/pjpeg,image/png,image/webp', 'max:5120'],
+            'cover' => ['nullable', 'file', 'mimes:jpeg,jpg,png,webp', 'mimetypes:image/jpeg,image/jpg,image/pjpeg,image/png,image/webp', 'max:5120'],
             'manager_emails' => ['nullable', 'array', 'max:10'],
             'manager_emails.*' => ['nullable', 'email', 'max:255'],
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator): void {
+            foreach (['photo', 'cover'] as $field) {
+                $file = $this->file($field);
+                if ($file && ! $file->isValid()) {
+                    $validator->errors()->add(
+                        $field,
+                        'Não foi possível enviar a imagem. Use JPEG, PNG ou WebP de até 5 MB.',
+                    );
+                }
+            }
+        });
     }
 }

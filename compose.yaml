@@ -7,14 +7,12 @@ services:
     restart: unless-stopped
     working_dir: /var/www/html
     environment:
-      # Views compiladas FORA do bind mount (Windows: utime no storage falha).
-      # Diretório no filesystem do container (sem volume) — touch/utime funciona.
-      VIEW_COMPILED_PATH: /tmp/laravel-views
+      # Fora do bind mount Windows (utime em storage/ falha).
+      # Sem tmpfs: no Docker Desktop o sticky bit 1777 quebra rename() das views (EPERM).
+      VIEW_COMPILED_PATH: /var/cache/laravel-views
     volumes:
       - ./app:/var/www/html
-    # Garante o diretório a cada start (imagem + tmpfs limpo).
-    tmpfs:
-      - /tmp/laravel-views:mode=1777,size=64m
+      - ./docker/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini:ro
     depends_on:
       mysql:
         condition: service_healthy
