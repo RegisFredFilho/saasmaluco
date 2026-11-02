@@ -74,6 +74,10 @@ Write-Host "==> Migrations..."
 docker compose exec -T app php artisan migrate --force
 if ($LASTEXITCODE -ne 0) { throw "migrate falhou" }
 
+Write-Host "==> Link de storage (fotos publicas)..."
+docker compose exec -T app php artisan storage:link
+Write-Host "Fotos tambem sao servidas via nginx /storage/ e rota Laravel (nao dependem so do symlink)."
+
 $useHostNode = $null -ne (Get-Command npm -ErrorAction SilentlyContinue)
 if ($useHostNode) {
     Write-Host "==> Frontend (npm no host)..."

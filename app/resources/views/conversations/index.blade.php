@@ -25,9 +25,7 @@
         <div class="space-y-3">
             @forelse ($conversations as $conversation)
                 <a href="{{ route('conversations.show', $conversation) }}" class="sg-panel flex items-start gap-4 p-4 transition hover:border-accent/40">
-                    <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent-soft font-semibold text-accent-fg">
-                        {{ strtoupper(mb_substr($conversation->artistProfile->publicName(), 0, 1)) }}
-                    </span>
+                    <x-avatar :src="$conversation->artistProfile->photoUrl()" :name="$conversation->artistProfile->publicName()" size="lg" />
                     <div class="min-w-0 flex-1">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <p class="truncate font-semibold text-ink">{{ $conversation->opportunity->title }}</p>

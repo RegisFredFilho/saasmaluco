@@ -4,11 +4,35 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ProfileTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_uploaded_avatar_appears_in_chrome_and_dashboard(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create(['name' => 'Alighieri']);
+
+        $this->actingAs($user)->patch('/profile', [
+            'name' => 'Alighieri',
+            'email' => $user->email,
+            'avatar' => UploadedFile::fake()->image('perfil.jpg', 200, 200),
+        ])->assertRedirect('/profile');
+
+        $user->refresh();
+        $this->assertNotNull($user->avatar_path);
+        $this->assertStringStartsWith('/storage/', $user->avatarUrl());
+
+        $this->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee($user->avatarUrl(), false);
+
+        $this->get($user->avatarUrl())->assertOk();
+    }
 
     public function test_profile_page_is_displayed(): void
     {

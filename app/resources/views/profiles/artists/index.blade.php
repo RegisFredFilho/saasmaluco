@@ -10,7 +10,9 @@
     <div class="space-y-3">
         @forelse ($profiles as $profile)
             <div class="sg-panel flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
-                <div>
+                <div class="flex min-w-0 items-center gap-3">
+                    <x-avatar :src="$profile->photoUrl()" :name="$profile->publicName()" size="lg" />
+                    <div class="min-w-0">
                     <h3 class="font-semibold text-ink">{{ $profile->publicName() }}</h3>
                     <p class="text-sm text-ink-muted">
                         {{ $profile->kind->label() }} · completude {{ $profile->completionPercent() }}%
@@ -18,6 +20,7 @@
                             · <span class="sg-badge-neutral">privado</span>
                         @endif
                     </p>
+                    </div>
                 </div>
                 <div class="flex gap-3 text-sm">
                     <a href="{{ route('artists.show', $profile) }}" class="sg-btn-ghost" target="_blank">Página pública</a>

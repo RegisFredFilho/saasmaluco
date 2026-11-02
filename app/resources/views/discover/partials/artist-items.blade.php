@@ -22,9 +22,7 @@
                             @endif
                         </p>
                     </div>
-                    @if ($artist->photoUrl())
-                        <img src="{{ $artist->photoUrl() }}" alt="" class="hidden h-10 w-10 rounded-full object-cover ring-2 ring-canvas-line sm:block">
-                    @endif
+                    <x-avatar :src="$artist->photoUrl()" :name="$artist->publicName()" size="md" class="hidden ring-2 ring-canvas-line sm:flex" />
                 </div>
                 @if ($artist->genres->isNotEmpty())
                     <div class="mt-3 flex flex-wrap gap-1.5">

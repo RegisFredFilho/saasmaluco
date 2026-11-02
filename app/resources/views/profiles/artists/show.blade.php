@@ -35,13 +35,7 @@
         </div>
         <div class="relative mx-auto -mt-16 max-w-content px-4 pb-8 md:px-6">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end">
-                @if ($profile->photoUrl())
-                    <img src="{{ $profile->photoUrl() }}" alt="{{ $profile->publicName() }}" class="h-28 w-28 rounded-full object-cover ring-4 ring-canvas shadow-glow">
-                @else
-                    <div class="flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br from-accent to-vibe text-2xl font-semibold ring-4 ring-canvas shadow-glow">
-                        {{ strtoupper(mb_substr($profile->publicName(), 0, 1)) }}
-                    </div>
-                @endif
+                <x-avatar :src="$profile->photoUrl()" :name="$profile->publicName()" size="2xl" class="ring-4 ring-canvas shadow-glow" />
                 <div class="pb-1">
                     <h1 class="font-display text-3xl font-semibold tracking-tight md:text-4xl">{{ $profile->publicName() }}</h1>
                     <p class="mt-1 text-ink-soft">

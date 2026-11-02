@@ -103,6 +103,15 @@ class VenuePublicProfileTest extends TestCase
         $this->assertSame('São Paulo', $profile->city);
         $this->assertTrue($profile->genres->contains($genre));
         $this->assertNotNull($profile->cover_path);
+        $this->assertStringStartsWith('/storage/', $profile->coverUrl());
+
+        $this->get(route('venues.show', $profile))
+            ->assertOk()
+            ->assertSee($profile->coverUrl(), false);
+
+        $this->get($profile->coverUrl())
+            ->assertOk()
+            ->assertHeader('content-type', 'image/jpeg');
         $this->assertTrue(
             $profile->managers()->where('user_id', $manager->id)->where('role', VenueManagerRole::Admin->value)->exists()
         );

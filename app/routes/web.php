@@ -20,6 +20,7 @@ use App\Http\Controllers\NetworkController;
 use App\Http\Controllers\OpportunityController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProposalController;
+use App\Http\Controllers\PublicStorageController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Social\PostController;
 use App\Http\Controllers\VenueProfileController;
@@ -33,6 +34,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/storage/{path}', PublicStorageController::class)
+    ->where('path', '.*')
+    ->name('storage.public');
 
 Route::get('/artistas', [ArtistDiscoveryController::class, 'index'])
     ->name('artists.index');

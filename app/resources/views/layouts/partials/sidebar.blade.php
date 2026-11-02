@@ -92,9 +92,7 @@
 
     <div class="border-t border-canvas-line p-2">
         <a href="{{ route('profile.edit') }}" class="sg-nav-link" title="Conta">
-            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-soft text-xs font-semibold text-accent-fg">
-                {{ strtoupper(mb_substr(Auth::user()->name, 0, 1)) }}
-            </span>
+            <x-avatar :src="Auth::user()->avatarUrl()" :name="Auth::user()->name" size="sm" />
             <span class="min-w-0 flex-1" x-show="{{ $labelShow }}" @unless($forceExpanded) x-cloak @endunless>
                 <span class="block truncate text-sm font-medium text-ink">{{ Auth::user()->name }}</span>
                 <span class="block truncate text-xs text-ink-muted">Conta</span>
