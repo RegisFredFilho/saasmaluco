@@ -12,5 +12,4 @@ Validando o fluxo automatico de CI/CD do SaaS Maluco.
 
 
 
-PORRA FUNCINOU PORRA VAI TOMA NO CU!!!!
 
