@@ -16,6 +16,7 @@ use App\Http\Controllers\Discovery\VenueDiscoveryController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\MosaicController;
 use App\Http\Controllers\NetworkController;
 use App\Http\Controllers\OpportunityController;
 use App\Http\Controllers\ProfileController;
@@ -53,6 +54,14 @@ Route::get('/oportunidades', [OpportunityDiscoveryController::class, 'index'])
     ->name('opportunities.index');
 Route::get('/oportunidades/{opportunity}', [OpportunityController::class, 'show'])
     ->name('opportunities.show');
+
+Route::get('/mosaico', [MosaicController::class, 'index'])->name('mosaic.index');
+Route::get('/spotify/connect', [MosaicController::class, 'connect'])->name('spotify.connect');
+Route::get('/callback', [MosaicController::class, 'callback'])->name('spotify.callback');
+Route::post('/spotify/disconnect', [MosaicController::class, 'disconnect'])->name('spotify.disconnect');
+Route::get('/mosaico/studio', [MosaicController::class, 'studio'])->name('mosaic.studio');
+Route::post('/mosaico/gerar', [MosaicController::class, 'generate'])->name('mosaic.generate');
+Route::get('/mosaico/download', [MosaicController::class, 'download'])->name('mosaic.download');
 
 Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/dashboard', function () {

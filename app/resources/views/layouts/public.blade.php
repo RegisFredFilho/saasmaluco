@@ -21,6 +21,7 @@
                 <a href="{{ route('artists.index') }}" class="sg-btn-ghost {{ request()->routeIs('artists.*') ? 'is-active sg-chip is-active' : '' }}">Artistas</a>
                 <a href="{{ route('venues.index') }}" class="sg-btn-ghost {{ request()->routeIs('venues.*') ? 'bg-accent-soft text-accent-fg' : '' }}">Espaços</a>
                 <a href="{{ route('opportunities.index') }}" class="sg-btn-ghost {{ request()->routeIs('opportunities.*') ? 'bg-accent-soft text-accent-fg' : '' }}">Oportunidades</a>
+                <a href="{{ route('mosaic.index') }}" class="sg-btn-ghost {{ request()->routeIs('mosaic.*') || request()->routeIs('spotify.*') ? 'bg-accent-soft text-accent-fg' : '' }}">Semaninha</a>
                 @auth
                     <a href="{{ route('dashboard') }}" class="sg-btn-primary">Painel</a>
                 @else
