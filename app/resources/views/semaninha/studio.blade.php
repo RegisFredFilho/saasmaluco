@@ -1,8 +1,4 @@
-@extends('layouts.public')
-
-@section('title', 'Studio — Semaninha')
-
-@section('content')
+<x-app-layout>
     <div class="space-y-6" x-data="{
         selected: [],
         toggle(url) {
@@ -22,8 +18,8 @@
                 <p class="text-sm text-ink-soft">Selecionadas: <span x-text="selected.length"></span>/9</p>
             </div>
             <div class="flex flex-wrap gap-2">
-                <a href="{{ route('mosaic.index') }}" class="sg-btn-ghost">Voltar</a>
-                <form method="POST" action="{{ route('spotify.disconnect') }}">
+                <a href="{{ route('semaninha.index') }}" class="sg-btn-ghost">Voltar</a>
+                <form method="POST" action="{{ route('semaninha.spotify.disconnect') }}">
                     @csrf
                     <button class="sg-btn-ghost" type="submit">Desconectar</button>
                 </form>
@@ -36,10 +32,15 @@
         @if (session('error'))
             <div class="rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{{ session('error') }}</div>
         @endif
-        @if (session('mosaic_ready'))
+        @if (session('generation_id'))
             <div class="sg-panel p-4 flex flex-wrap items-center justify-between gap-3">
                 <p class="text-sm text-ink-soft">Mosaico pronto para download.</p>
-                <a href="{{ route('mosaic.download') }}" class="sg-btn-primary">Baixar PNG</a>
+                <a href="{{ route('semaninha.download', session('generation_id')) }}" class="sg-btn-primary">Baixar PNG</a>
+            </div>
+        @elseif ($latestGeneration)
+            <div class="sg-panel p-4 flex flex-wrap items-center justify-between gap-3">
+                <p class="text-sm text-ink-soft">Último mosaico: {{ $latestGeneration->created_at->format('d/m/Y H:i') }}</p>
+                <a href="{{ route('semaninha.download', $latestGeneration) }}" class="sg-btn-secondary">Baixar de novo</a>
             </div>
         @endif
 
@@ -48,25 +49,14 @@
                 Nenhuma capa encontrada. Ouça mais músicas no Spotify e tente de novo.
             </div>
         @else
-            <form method="POST" action="{{ route('mosaic.generate') }}" class="space-y-4">
+            <form method="POST" action="{{ route('semaninha.generate') }}" class="space-y-4">
                 @csrf
+                <input type="hidden" name="grid" value="3">
                 <template x-for="url in selected" :key="url">
                     <input type="hidden" name="images[]" :value="url">
                 </template>
 
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    @foreach ($covers as $cover)
-                        <button
-                            type="button"
-                            class="group relative overflow-hidden rounded-xl border border-canvas-line bg-canvas-elev text-left"
-                            :class="isSelected(@js($cover['image'])) ? 'ring-2 ring-accent' : ''"
-                            @click="toggle(@js($cover['image']))"
-                        >
-                            <img src="{{ $cover['image'] }}" alt="{{ $cover['title'] }}" class="aspect-square w-full object-cover transition group-hover:scale-105" loading="lazy">
-                            <span class="absolute inset-x-0 bottom-0 bg-black/60 px-2 py-1 text-xs text-white truncate">{{ $cover['title'] }}</span>
-                        </button>
-                    @endforeach
-                </div>
+                @include('semaninha.partials.cover-grid', ['covers' => $covers])
 
                 <button type="submit" class="sg-btn-primary" :disabled="selected.length !== 9" :class="selected.length !== 9 ? 'opacity-50 pointer-events-none' : ''">
                     Gerar mosaico 3×3
@@ -74,4 +64,4 @@
             </form>
         @endif
     </div>
-@endsection
+</x-app-layout>

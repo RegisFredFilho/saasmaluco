@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Semaninha;
 
 use RuntimeException;
 
@@ -9,7 +9,7 @@ class MosaicImageGenerator
     /**
      * @param  list<string>  $imageUrls
      */
-    public function generate(array $imageUrls, int $grid = 3, int $size = 1080): string
+    public function generate(int $userId, array $imageUrls, int $grid = 3, int $size = 1080): string
     {
         $grid = max(2, min(4, $grid));
         $needed = $grid * $grid;
@@ -51,10 +51,11 @@ class MosaicImageGenerator
             imagedestroy($tile);
         }
 
-        $dir = storage_path('app/public/mosaics');
+        $relativeDir = 'mosaics/'.$userId;
+        $dir = storage_path('app/public/'.$relativeDir);
 
-        if (! is_dir($dir)) {
-            mkdir($dir, 0775, true);
+        if (! is_dir($dir) && ! mkdir($dir, 0775, true) && ! is_dir($dir)) {
+            throw new RuntimeException('Não foi possível criar a pasta do mosaico.');
         }
 
         $filename = 'mosaic-'.uniqid('', true).'.png';
@@ -67,7 +68,7 @@ class MosaicImageGenerator
 
         imagedestroy($canvas);
 
-        return 'mosaics/'.$filename;
+        return $relativeDir.'/'.$filename;
     }
 
     /**

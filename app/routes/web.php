@@ -16,13 +16,14 @@ use App\Http\Controllers\Discovery\VenueDiscoveryController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\MessageController;
-use App\Http\Controllers\MosaicController;
 use App\Http\Controllers\NetworkController;
 use App\Http\Controllers\OpportunityController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\PublicStorageController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\Semaninha\SemaninhaController;
+use App\Http\Controllers\Semaninha\SpotifyAuthController;
 use App\Http\Controllers\Social\PostController;
 use App\Http\Controllers\VenueProfileController;
 use App\Models\AppNotification;
@@ -55,15 +56,15 @@ Route::get('/oportunidades', [OpportunityDiscoveryController::class, 'index'])
 Route::get('/oportunidades/{opportunity}', [OpportunityController::class, 'show'])
     ->name('opportunities.show');
 
-Route::get('/mosaico', [MosaicController::class, 'index'])->name('mosaic.index');
-Route::get('/spotify/connect', [MosaicController::class, 'connect'])->name('spotify.connect');
-Route::get('/callback', [MosaicController::class, 'callback'])->name('spotify.callback');
-Route::post('/spotify/disconnect', [MosaicController::class, 'disconnect'])->name('spotify.disconnect');
-Route::get('/mosaico/studio', [MosaicController::class, 'studio'])->name('mosaic.studio');
-Route::post('/mosaico/gerar', [MosaicController::class, 'generate'])->name('mosaic.generate');
-Route::get('/mosaico/download', [MosaicController::class, 'download'])->name('mosaic.download');
-
 Route::middleware(['auth', 'active'])->group(function () {
+    Route::get('/semaninha', [SemaninhaController::class, 'index'])->name('semaninha.index');
+    Route::get('/semaninha/studio', [SemaninhaController::class, 'studio'])->name('semaninha.studio');
+    Route::post('/semaninha/gerar', [SemaninhaController::class, 'generate'])->name('semaninha.generate');
+    Route::get('/semaninha/download/{generation}', [SemaninhaController::class, 'download'])->name('semaninha.download');
+    Route::get('/semaninha/spotify/connect', [SpotifyAuthController::class, 'connect'])->name('semaninha.spotify.connect');
+    Route::get('/semaninha/spotify/callback', [SpotifyAuthController::class, 'callback'])->name('semaninha.spotify.callback');
+    Route::post('/semaninha/spotify/disconnect', [SpotifyAuthController::class, 'disconnect'])->name('semaninha.spotify.disconnect');
+
     Route::get('/dashboard', function () {
         $user = auth()->user();
 
