@@ -129,8 +129,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
       - name: Build Laravel Docker image
-        run: docker build -t saasmaluco:security .
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: false
+          load: true
+          pull: true
+          tags: saasmaluco:security
+          cache-from: type=gha,scope=saasmaluco-laravel
+          cache-to: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' && 'type=gha,mode=max,scope=saasmaluco-laravel,ignore-error=true' || '' }}
 
       - name: Scan Docker image vulnerabilities
         uses: aquasecurity/trivy-action@v0.36.0
@@ -143,7 +154,6 @@ jobs:
           severity: 'HIGH,CRITICAL'
           ignore-unfixed: true
           exit-code: '0'
-
 
   deploy:
     name: Deploy Homologacao
