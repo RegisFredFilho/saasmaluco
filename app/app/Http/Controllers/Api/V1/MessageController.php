@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1;
+
+use App\Http\Controllers\Controller;
+use App\Http\Resources\MessageResource;
+use App\Models\Conversation;
+use App\Services\InAppNotifier;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class MessageController extends Controller
+{
+    public function store(Request $request, Conversation $conversation, InAppNotifier $notifier): JsonResponse
+    {
+        $this->authorize('message', $conversation);
+
+        $data = $request->validate([
+            'body' => ['required', 'string', 'max:5000'],
+        ]);
+
+        $message = $conversation->messages()->create([
+            'user_id' => $request->user()->id,
+            'body' => $data['body'],
+        ]);
+
+        $conversation->update(['last_message_at' => now()]);
+
+        $conversation->loadMissing(['venueProfile', 'artistProfile', 'opportunity']);
+        $recipients = $notifier->venueManagerIds($conversation->venueProfile)
+            ->merge($notifier->artistManagerIds($conversation->artistProfile))
+            ->reject(fn ($id) => (int) $id === (int) $request->user()->id)
+            ->values();
+
+        $notifier->notifyMany(
+            $recipients,
+            'message.created',
+            'message:'.$message->id,
+            'Nova mensagem',
+            'Nova mensagem em “'.$conversation->opportunity->title.'”.',
+            ['url' => route('conversations.show', $conversation), 'message_id' => $message->id],
+        );
+
+        return MessageResource::make($message->load('user'))
+            ->response()
+            ->setStatusCode(201);
+    }
+}

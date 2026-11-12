@@ -1,0 +1,16 @@
+---
+description: Segurança de aplicações web no SindiGig
+alwaysApply: true
+---
+
+# Segurança
+
+- Validar sempre no servidor (Form Requests / validators). Nunca confiar só em JS.
+- Autorizar por recurso (Policies/Gates). Autenticação ≠ autorização.
+- Proteções Laravel padrão: CSRF em rotas web, mass assignment controlado, escape Blade (`{{ }}`).
+- Senhas apenas com hash do framework. Nunca versionar `.env`, tokens ou chaves.
+- Uploads: validar MIME real, extensão e tamanho; armazenar fora do document root lógico quando possível.
+- Logs sem senhas, tokens ou PII desnecessária.
+- Não desativar CSRF, validação ou auth só para “facilitar” o local.
+- Dados privados nunca em páginas/APIs públicas.
+- Antes de atualizar dependências, avaliar compatibilidade e impacto.
