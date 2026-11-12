@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -74,6 +75,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function appNotifications(): HasMany
     {
         return $this->hasMany(AppNotification::class);
+    }
+
+    public function spotifyConnection(): HasOne
+    {
+        return $this->hasOne(SpotifyConnection::class);
+    }
+
+    public function mosaicGenerations(): HasMany
+    {
+        return $this->hasMany(MosaicGeneration::class);
     }
 
     public function isActive(): bool

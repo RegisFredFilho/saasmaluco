@@ -22,6 +22,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\PublicStorageController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\Semaninha\SemaninhaController;
+use App\Http\Controllers\Semaninha\SpotifyAuthController;
 use App\Http\Controllers\Social\PostController;
 use App\Http\Controllers\VenueProfileController;
 use App\Models\AppNotification;
@@ -55,6 +57,14 @@ Route::get('/oportunidades/{opportunity}', [OpportunityController::class, 'show'
     ->name('opportunities.show');
 
 Route::middleware(['auth', 'active'])->group(function () {
+    Route::get('/semaninha', [SemaninhaController::class, 'index'])->name('semaninha.index');
+    Route::get('/semaninha/studio', [SemaninhaController::class, 'studio'])->name('semaninha.studio');
+    Route::post('/semaninha/gerar', [SemaninhaController::class, 'generate'])->name('semaninha.generate');
+    Route::get('/semaninha/download/{generation}', [SemaninhaController::class, 'download'])->name('semaninha.download');
+    Route::get('/semaninha/spotify/connect', [SpotifyAuthController::class, 'connect'])->name('semaninha.spotify.connect');
+    Route::get('/semaninha/spotify/callback', [SpotifyAuthController::class, 'callback'])->name('semaninha.spotify.callback');
+    Route::post('/semaninha/spotify/disconnect', [SpotifyAuthController::class, 'disconnect'])->name('semaninha.spotify.disconnect');
+
     Route::get('/dashboard', function () {
         $user = auth()->user();
 

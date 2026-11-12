@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    'spotify' => [
+        'client_id' => env('SPOTIFY_CLIENT_ID'),
+        'client_secret' => env('SPOTIFY_CLIENT_SECRET'),
+        'redirect' => env(
+            'SPOTIFY_REDIRECT_URI',
+            rtrim((string) env('APP_URL', 'http://127.0.0.1:8080'), '/').'/semaninha/spotify/callback'
+        ),
+        'scopes' => ['user-top-read'],
+    ],
+
 ];

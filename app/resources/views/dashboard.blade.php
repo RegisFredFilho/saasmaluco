@@ -13,6 +13,7 @@
                 <div class="mt-6 flex flex-wrap gap-3">
                     <a href="{{ route('opportunities.index') }}" class="sg-btn-primary">Explorar agora</a>
                     <a href="{{ route('posts.create') }}" class="sg-btn-secondary">Nova publicação</a>
+                    <a href="{{ route('semaninha.index') }}" class="sg-btn-ghost">Semaninha</a>
                 </div>
             </div>
         </section>
@@ -38,6 +39,19 @@
                 <p class="mt-2 font-display text-2xl font-semibold">{{ $upcomingBookings->count() }}</p>
                 <p class="mt-1 text-xs text-ink-muted">próximos shows</p>
             </a>
+        </section>
+
+        <section class="sg-panel p-6 md:p-8">
+            <div class="flex flex-wrap items-end justify-between gap-4">
+                <div class="max-w-xl space-y-2">
+                    <p class="text-xs font-semibold uppercase tracking-[0.16em] text-accent-fg">Ferramenta</p>
+                    <h2 class="font-display text-xl font-semibold text-ink md:text-2xl">Semaninha</h2>
+                    <p class="text-sm text-ink-soft">
+                        Conecte seu Spotify, monte um mosaico com as capas dos álbuns mais ouvidos e baixe em PNG.
+                    </p>
+                </div>
+                <a href="{{ route('semaninha.index') }}" class="sg-btn-primary">Abrir Semaninha</a>
+            </div>
         </section>
 
         <section>

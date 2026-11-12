@@ -88,6 +88,10 @@
             <x-icon name="building" class="h-5 w-5 shrink-0" />
             <span x-show="{{ $labelShow }}" @unless($forceExpanded) x-cloak @endunless>Meus espaços</span>
         </a>
+        <a href="{{ route('semaninha.index') }}" class="sg-nav-link {{ request()->routeIs('semaninha.*') ? 'is-active' : '' }}" title="Semaninha">
+            <x-icon name="music" class="h-5 w-5 shrink-0" />
+            <span x-show="{{ $labelShow }}" @unless($forceExpanded) x-cloak @endunless>Semaninha</span>
+        </a>
     </nav>
 
     <div class="border-t border-canvas-line p-2">
