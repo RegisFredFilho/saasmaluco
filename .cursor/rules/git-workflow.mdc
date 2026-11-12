@@ -1,0 +1,12 @@
+---
+description: Fluxo Git padrão — develop como destino de PRs e deploys
+alwaysApply: true
+---
+
+# Git workflow
+
+- Branch-alvo padrão de PR, merge e entrega: **`develop`** (não `main`, salvo pedido explícito).
+- Após commit de correção/feature: push da branch e abrir/atualizar PR com `--base develop`.
+- `develop` é protegida: mudanças só via PR (não push direto).
+- Homolog sobe a partir de `develop` (CI Deploy Homologacao no push).
+- Commits só quando o usuário pedir; push/PR para develop quando pedir “subir”, “PR” ou equivalente.

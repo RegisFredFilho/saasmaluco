@@ -23,5 +23,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY docker/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
+
+# php-fpm (www-data = 33) precisa escrever views compiladas em VIEW_COMPILED_PATH.
+RUN mkdir -p /var/cache/laravel-views \
+    && chown www-data:www-data /var/cache/laravel-views \
+    && chmod 0775 /var/cache/laravel-views
 
 WORKDIR /var/www/html
